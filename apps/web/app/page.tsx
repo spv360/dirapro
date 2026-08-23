@@ -4,10 +4,26 @@ import Reveal from "./components/Reveal";
 import SocialLinks from "./components/SocialLinks";
 
 const profileHighlights = [
-  "Professional Identity",
-  "Expertise & Experience",
-  "Knowledge & Insights",
-  "Stories & Media",
+  {
+    title: "Professional Identity",
+    description:
+      "Your professional introduction, focus, positioning, and public identity.",
+  },
+  {
+    title: "Expertise & Experience",
+    description:
+      "Skills, domains, roles, achievements, and the work behind your experience.",
+  },
+  {
+    title: "Knowledge & Insights",
+    description:
+      "Articles, ideas, research, lessons, talks, and perspectives.",
+  },
+  {
+    title: "Stories & Media",
+    description:
+      "Projects, interviews, videos, presentations, and moments from your journey.",
+  },
 ];
 
 export default function Home() {
@@ -88,6 +104,67 @@ export default function Home() {
       </Reveal>
 
       <Reveal>
+          <section className="scattered-section">
+            <div className="section-heading">
+              <p className="eyebrow">THE PROBLEM</p>
+
+              <h2>
+                Your professional identity
+                <br />
+                <span>is scattered.</span>
+              </h2>
+            </div>
+
+          <div className="identity-map">
+            <div className="identity-sources">
+              <div>
+                <strong>LinkedIn</strong>
+                <span>Career</span>
+              </div>
+
+              <div>
+                <strong>GitHub</strong>
+                <span>Work</span>
+              </div>
+
+              <div>
+                <strong>YouTube</strong>
+                <span>Knowledge</span>
+              </div>
+
+              <div>
+                <strong>Articles</strong>
+                <span>Insights</span>
+              </div>
+
+              <div>
+                <strong>Projects</strong>
+                <span>Experience</span>
+              </div>
+
+              <div>
+                <strong>Website</strong>
+                <span>Story</span>
+              </div>
+            </div>
+
+            <div className="identity-connector">
+              <span>↓</span>
+            </div>
+
+            <div className="identity-dira">
+              <span className="identity-dira__label">DIRAPRO</span>
+              <strong>One professional identity.</strong>
+              <p>
+                Bring your expertise, experience, knowledge, work, and story
+                together in one place.
+              </p>
+            </div>
+          </div>
+        </section>
+      </Reveal>
+
+      <Reveal>
         <section id="professionals" className="pillars-section">
           <div className="section-heading">
             <p className="eyebrow">THE FOUNDATION</p>
@@ -97,20 +174,79 @@ export default function Home() {
 
           <div className="pillar-grid">
             {profileHighlights.map((item, index) => (
-              <article className="pillar-card" key={item}>
+              <article className="pillar-card" key={item.title}>
                 <span>0{index + 1}</span>
 
-                <h3>{item}</h3>
+                <h3>{item.title}</h3>
 
-                <p>
-                  A thoughtful digital layer for representing the depth behind
-                  a professional career.
-                </p>
+                <p>{item.description}</p>
               </article>
             ))}
           </div>
         </section>
       </Reveal>
+
+              <Reveal>
+          <section className="evidence-section">
+            <div className="evidence-heading">
+              <p className="eyebrow">THE EVIDENCE</p>
+
+              <h2>
+                Don&apos;t just say
+                <br />
+                <span>what you know.</span>
+                <br />
+                Show it.
+              </h2>
+            </div>
+
+            <div className="evidence-card">
+              <div className="evidence-card__top">
+                <div>
+                  <span className="evidence-label">EXPERTISE</span>
+                  <h3>Cloud Architecture</h3>
+                </div>
+
+                <span className="evidence-status">SUPPORTED</span>
+              </div>
+
+              <div className="evidence-tags">
+                <span>AI Infrastructure</span>
+                <span>Platform Engineering</span>
+                <span>Cloud Architecture</span>
+              </div>
+
+              <div className="evidence-divider" />
+
+              <div className="evidence-metrics">
+                <div>
+                  <strong>16+</strong>
+                  <span>Years experience</span>
+                </div>
+
+                <div>
+                  <strong>42</strong>
+                  <span>Projects</span>
+                </div>
+
+                <div>
+                  <strong>12</strong>
+                  <span>Publications</span>
+                </div>
+
+                <div>
+                  <strong>8</strong>
+                  <span>Talks &amp; presentations</span>
+                </div>
+              </div>
+            </div>
+
+            <p className="evidence-description">
+              Expertise becomes more credible when people can see the
+              experience, work, knowledge, and achievements behind it.
+            </p>
+          </section>
+        </Reveal>
 
       <Reveal>
         <section id="about" className="about-section">
