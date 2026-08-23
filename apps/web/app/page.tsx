@@ -1,69 +1,184 @@
-import Image from "next/image";
+import Link from "next/link";
+import ProfessionalCard from "./components/ProfessionalCard";
+import Reveal from "./components/Reveal";
+import SocialLinks from "./components/SocialLinks";
+
+const profileHighlights = [
+  "Professional Identity",
+  "Expertise & Experience",
+  "Knowledge & Insights",
+  "Stories & Media",
+];
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
+    <main>
+      <nav className="site-nav">
+        <Link href="/" className="brand">
+          Dira<span>Pro</span>
+        </Link>
+
+        <div className="nav-links">
+          <Link href="#platform">Platform</Link>
+          <Link href="#professionals">Professionals</Link>
+          <Link href="#about">About</Link>
+        </div>
+
+        <Link href="#connect" className="nav-cta">
+          Get Started
+        </Link>
+      </nav>
+
+      <section className="hero">
+        <div className="hero-ambient" />
+
+        <div className="hero-content hero-enter">
+          <p className="eyebrow">PROFESSIONAL IDENTITY & KNOWLEDGE</p>
+
+          <h1>
+            Your expertise
+            <br />
+            deserves a <em>digital identity.</em>
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+
+          <p className="hero-description">
+            DiraPro helps professionals bring their expertise, experience,
+            achievements, knowledge, and professional story together into a
+            credible digital presence.
           </p>
+
+          <div className="hero-actions">
+            <Link href="#professionals" className="button button-primary">
+              Explore DiraPro
+            </Link>
+
+            <Link href="#about" className="button button-secondary">
+              Discover the idea <span>↗</span>
+            </Link>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        <div
+          className="hero-visual hero-card-enter"
+          aria-label="DiraPro professional identity preview"
+        >
+          <ProfessionalCard featured={true} />
         </div>
-      </main>
-    </div>
+      </section>
+
+      <Reveal>
+        <section id="platform" className="statement-section">
+          <p className="eyebrow">
+            A DIFFERENT KIND OF PROFESSIONAL PRESENCE
+          </p>
+
+          <h2>
+            More than a profile.
+            <br />
+            <span>A professional story.</span>
+          </h2>
+
+          <p>
+            Your career is more than a title or a list of achievements.
+            DiraPro brings the different dimensions of your professional
+            journey together so they can be discovered, understood, and
+            remembered.
+          </p>
+        </section>
+      </Reveal>
+
+      <Reveal>
+        <section id="professionals" className="pillars-section">
+          <div className="section-heading">
+            <p className="eyebrow">THE FOUNDATION</p>
+
+            <h2>Built around what makes you, you.</h2>
+          </div>
+
+          <div className="pillar-grid">
+            {profileHighlights.map((item, index) => (
+              <article className="pillar-card" key={item}>
+                <span>0{index + 1}</span>
+
+                <h3>{item}</h3>
+
+                <p>
+                  A thoughtful digital layer for representing the depth behind
+                  a professional career.
+                </p>
+              </article>
+            ))}
+          </div>
+        </section>
+      </Reveal>
+
+      <Reveal>
+        <section id="about" className="about-section">
+          <div>
+            <p className="eyebrow">THE DIRAPRO PHILOSOPHY</p>
+
+            <h2>
+              AI amplifies expertise. It does not manufacture credibility.
+            </h2>
+          </div>
+
+          <p>
+            DiraPro is being built around people first. Technology and AI
+            should make professional knowledge easier to organize, publish,
+            discover, and preserve while keeping authenticity, evidence, and
+            trust at the center.
+          </p>
+        </section>
+      </Reveal>
+
+      <Reveal>
+        <section className="presence-section">
+          <div>
+            <p className="eyebrow">PROFESSIONAL PRESENCE</p>
+
+            <h2>
+              One identity.
+              <br />
+              Many places.
+            </h2>
+          </div>
+
+          <div>
+            <p>
+              DiraPro can become the central layer connecting a professional
+              identity with the platforms, publications, media, and knowledge
+              that already represent them online.
+            </p>
+
+            <SocialLinks />
+          </div>
+        </section>
+      </Reveal>
+
+      <Reveal>
+        <section id="connect" className="cta-section">
+          <p className="eyebrow">THE BEGINNING</p>
+
+          <h2>Build a digital identity that grows with you.</h2>
+
+          <p>
+            DiraPro is beginning with a focused professional community and a
+            global ambition.
+          </p>
+
+          <Link
+            href="mailto:hello@dirapro.in"
+            className="button button-primary"
+          >
+            Connect with DiraPro
+          </Link>
+        </section>
+      </Reveal>
+
+      <footer>
+        <span>© {new Date().getFullYear()} DiraPro</span>
+        <span>Professional Identity & Knowledge</span>
+      </footer>
+    </main>
   );
 }
