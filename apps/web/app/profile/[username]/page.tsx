@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { demoProfile } from "../../data/profile";
 import AchievementsSection from "../../components/profile/AchievementsSection";
 import ContributionsSection from "../../components/profile/ContributionsSection";
 import EvidenceSection from "../../components/profile/EvidenceSection";
@@ -11,6 +10,7 @@ import MediaSection from "../../components/profile/MediaSection";
 import ProfileHero from "../../components/profile/ProfileHero";
 import PublicPresenceSection from "../../components/profile/PublicPresenceSection";
 import Reveal from "../../components/Reveal";
+import { demoProfile } from "../../data/profile";
 
 type ProfilePageProps = {
   params: Promise<{

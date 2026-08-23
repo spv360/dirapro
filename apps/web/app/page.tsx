@@ -1,28 +1,78 @@
 import Link from "next/link";
 import ProfessionalCard from "./components/ProfessionalCard";
 import Reveal from "./components/Reveal";
-import SocialLinks from "./components/SocialLinks";
+import SocialLinks, { type SocialLink } from "./components/SocialLinks";
 
 const profileHighlights = [
   {
+    index: "01",
     title: "Professional Identity",
     description:
       "Your professional introduction, focus, positioning, and public identity.",
+    motif: "Identity, biography, and presence organized with credibility.",
   },
   {
+    index: "02",
     title: "Expertise & Experience",
     description:
       "Skills, domains, roles, achievements, and the work behind your experience.",
+    motif: "Capability connected to appointments, contribution, and judgment.",
   },
   {
+    index: "03",
     title: "Knowledge & Insights",
     description:
       "Articles, ideas, research, lessons, talks, and perspectives.",
+    motif: "What you publish, teach, discuss, and make discoverable.",
   },
   {
+    index: "04",
     title: "Stories & Media",
     description:
       "Projects, interviews, videos, presentations, and moments from your journey.",
+    motif: "The public record surrounding the work and the person behind it.",
+  },
+];
+
+const identitySignals = [
+  "Expertise",
+  "Knowledge",
+  "Presence",
+];
+
+const identitySources = [
+  { label: "LinkedIn", context: "Career" },
+  { label: "Articles", context: "Knowledge" },
+  { label: "Talks", context: "Public voice" },
+  { label: "Recognition", context: "Credibility" },
+  { label: "Institutional profile", context: "Appointments" },
+  { label: "Website", context: "Story" },
+];
+
+const presenceLinks: SocialLink[] = [
+  {
+    label: "LinkedIn",
+    href: "https://www.linkedin.com/",
+    descriptor: "Professional positioning and career visibility",
+    tone: "linkedin",
+  },
+  {
+    label: "YouTube",
+    href: "https://www.youtube.com/",
+    descriptor: "Talks, lectures, and public-facing knowledge",
+    tone: "youtube",
+  },
+  {
+    label: "Google Scholar",
+    href: "https://scholar.google.com/",
+    descriptor: "Research, publications, and discoverability",
+    tone: "scholar",
+  },
+  {
+    label: "Official profile",
+    href: "https://www.example.com/",
+    descriptor: "Institutional and professional presence",
+    tone: "institutional",
   },
 ];
 
@@ -47,6 +97,16 @@ export default function Home() {
 
       <section className="hero">
         <div className="hero-ambient" />
+        <div className="hero-identity-field" aria-hidden="true">
+          {identitySignals.map((signal, index) => (
+            <span
+              key={signal}
+              className={`hero-signal hero-signal--${index + 1}`}
+            >
+              {signal}
+            </span>
+          ))}
+        </div>
 
         <div className="hero-content hero-enter">
           <p className="eyebrow">PROFESSIONAL IDENTITY & KNOWLEDGE</p>
@@ -63,6 +123,14 @@ export default function Home() {
             credible digital presence.
           </p>
 
+          <div className="hero-ledger" aria-label="Professional identity dimensions">
+            <span>Identity</span>
+            <span>Expertise</span>
+            <span>Knowledge</span>
+            <span>Presence</span>
+            <span>Evidence</span>
+          </div>
+
           <div className="hero-actions">
             <Link href="#professionals" className="button button-primary">
               Explore DiraPro
@@ -78,7 +146,15 @@ export default function Home() {
           className="hero-visual hero-card-enter"
           aria-label="DiraPro professional identity preview"
         >
-          <ProfessionalCard featured={true} />
+          <div className="hero-visual-shell">
+            <div className="hero-visual-markers" aria-hidden="true">
+              <span>Knowledge</span>
+              <span>Appointments</span>
+              <span>Recognition</span>
+            </div>
+
+            <ProfessionalCard featured={true} />
+          </div>
         </div>
       </section>
 
@@ -117,35 +193,12 @@ export default function Home() {
 
           <div className="identity-map">
             <div className="identity-sources">
-              <div>
-                <strong>LinkedIn</strong>
-                <span>Career</span>
-              </div>
-
-              <div>
-                <strong>GitHub</strong>
-                <span>Work</span>
-              </div>
-
-              <div>
-                <strong>YouTube</strong>
-                <span>Knowledge</span>
-              </div>
-
-              <div>
-                <strong>Articles</strong>
-                <span>Insights</span>
-              </div>
-
-              <div>
-                <strong>Projects</strong>
-                <span>Experience</span>
-              </div>
-
-              <div>
-                <strong>Website</strong>
-                <span>Story</span>
-              </div>
+              {identitySources.map((item, index) => (
+                <div key={item.label} className={`identity-source identity-source--${index + 1}`}>
+                  <strong>{item.label}</strong>
+                  <span>{item.context}</span>
+                </div>
+              ))}
             </div>
 
             <div className="identity-connector">
@@ -174,12 +227,17 @@ export default function Home() {
 
           <div className="pillar-grid">
             {profileHighlights.map((item, index) => (
-              <article className="pillar-card" key={item.title}>
-                <span>0{index + 1}</span>
+              <article
+                className={`pillar-card pillar-card--${index}`}
+                key={item.title}
+              >
+                <span>{item.index}</span>
 
                 <h3>{item.title}</h3>
 
                 <p>{item.description}</p>
+
+                <small>{item.motif}</small>
               </article>
             ))}
           </div>
@@ -286,7 +344,7 @@ export default function Home() {
               that already represent them online.
             </p>
 
-            <SocialLinks />
+            <SocialLinks links={presenceLinks} />
           </div>
         </section>
       </Reveal>
