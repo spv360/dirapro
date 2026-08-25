@@ -96,6 +96,35 @@ export type EvidenceSignal = {
   context?: string;
 };
 
+export type PublicMomentType =
+  | "News"
+  | "Event"
+  | "Publication"
+  | "Interview"
+  | "Recognition"
+  | "Announcement";
+
+export type PublicMoment = {
+  id: string;
+  type: PublicMomentType;
+  title: string;
+  organization: string;
+  date: string;
+  summary?: string;
+  link?: string;
+};
+
+export type CurrentMoment = {
+  statement: string;
+  focus: string[];
+  updated: string;
+};
+
+export type ConnectionConfig = {
+  enabled: boolean;
+  label: string;
+};
+
 export type DiraProfile = {
   username: string;
   identity: ProfileIdentity;
@@ -107,6 +136,9 @@ export type DiraProfile = {
   media: MediaItem[];
   publicPresence: PublicPresenceLink[];
   evidence: EvidenceSignal[];
+  currentMoment: CurrentMoment;
+  publicMoments: PublicMoment[];
+  connection: ConnectionConfig;
 };
 
 export const demoProfile: DiraProfile = {
@@ -122,6 +154,60 @@ export const demoProfile: DiraProfile = {
     biography:
       "Alex Morgan works across enterprise technology, executive advisory, and public knowledge sharing. Over the last sixteen years, Alex has led platform modernization programs, advised leadership teams on responsible AI adoption, built operating structures for large engineering organizations, and translated technical capability into decisions that executives, educators, and public institutions can trust. The result is a career defined not only by systems built, but by the professional judgment, stewardship, and evidence that support that work.",
     initials: "AM",
+  },
+  currentMoment: {
+    statement:
+      "Building the next generation of intelligent enterprise platforms.",
+    focus: [
+      "AI Infrastructure",
+      "Platform Engineering",
+      "Responsible AI",
+    ],
+    updated: "August 2026",
+  },
+
+  publicMoments: [
+    {
+      id: "moment-ai-summit",
+      type: "Event",
+      title: "Future Technology Summit",
+      organization: "Future Technology Summit",
+      date: "June 2026",
+      summary: "Speaking on building reliable AI systems for large organizations.",
+    },
+    {
+      id: "moment-ai-article",
+      type: "Publication",
+      title: "Designing reliable AI operating models",
+      organization: "MIT Sloan Management Review",
+      date: "May 2026",
+      summary:
+        "A practical framework for moving AI from experimentation into accountable institutional practice.",
+      link: "https://sloanreview.mit.edu/",
+    },
+    {
+      id: "moment-advisory",
+      type: "Recognition",
+      title: "Responsible AI Advisory Appointment",
+      organization: "Digital Policy Forum",
+      date: "April 2026",
+      summary:
+        "Joined a multidisciplinary working group focused on practical AI safeguards.",
+    },
+    {
+      id: "moment-interview",
+      type: "Interview",
+      title: "The future of enterprise AI",
+      organization: "Technology Leadership Review",
+      date: "March 2026",
+      summary:
+        "Discussing how organizations can scale AI while maintaining operational accountability.",
+    },
+  ],
+
+  connection: {
+    enabled: true,
+    label: "Connect with Alex",
   },
   expertise: [
     {

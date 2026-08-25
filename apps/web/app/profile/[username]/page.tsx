@@ -11,6 +11,9 @@ import ProfileHero from "../../components/profile/ProfileHero";
 import PublicPresenceSection from "../../components/profile/PublicPresenceSection";
 import Reveal from "../../components/Reveal";
 import { demoProfile } from "../../data/profile";
+import CurrentMomentSection from "../../components/profile/CurrentMomentSection";
+import ProfileClosingSection from "../../components/profile/ProfileClosingSection";
+import PublicMomentsSection from "../../components/profile/PublicMomentsSection";
 
 type ProfilePageProps = {
   params: Promise<{
@@ -44,6 +47,10 @@ export default async function ProfilePage({
       <ProfileHero profile={profile} />
 
       <Reveal>
+       <CurrentMomentSection moment={profile.currentMoment} />
+      </Reveal>
+
+      <Reveal>
         <ExpertiseSection items={profile.expertise} />
       </Reveal>
 
@@ -63,6 +70,10 @@ export default async function ProfilePage({
       </Reveal>
 
       <Reveal>
+        <PublicMomentsSection items={profile.publicMoments} />
+      </Reveal>
+
+      <Reveal>
         <KnowledgeSection items={profile.knowledge} />
       </Reveal>
 
@@ -77,6 +88,8 @@ export default async function ProfilePage({
       <Reveal>
         <EvidenceSection items={profile.evidence} />
       </Reveal>
+
+      <ProfileClosingSection profile={profile} />
 
       <footer className="profile-footer">
         <span>© {new Date().getFullYear()} DiraPro</span>
