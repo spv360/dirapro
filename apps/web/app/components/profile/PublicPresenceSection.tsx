@@ -8,11 +8,11 @@ type PublicPresenceSectionProps = {
 
 const groupDescriptions = {
   social:
-    "Channels where this professional publishes updates, commentary, talks, or public-facing activity.",
+    "Public updates, talks, and events.",
   professional:
-    "Official profiles and institutional surfaces that represent current work, appointments, or practice.",
+    "Official professional and institutional profiles.",
   research:
-    "Profiles that support publication discovery, persistent scholarly identity, or research presence.",
+    "Research and publication identity.",
 } as const;
 
 export default function PublicPresenceSection({
@@ -28,8 +28,8 @@ export default function PublicPresenceSection({
     <section className="profile-section" id="public-presence">
       <SectionIntro
         eyebrow="PUBLIC PRESENCE"
-        title="Where to find this professional across the public web."
-        description="Public presence is a first-class part of identity in Dira. It should clearly connect people to official, professional, and research surfaces without turning into a generic social link list."
+        title="Public Presence"
+        description="Official places to find Alex Morgan across the public web."
         align="split"
       />
 

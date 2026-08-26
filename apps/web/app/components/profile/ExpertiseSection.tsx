@@ -7,7 +7,7 @@ type ExpertiseSectionProps = {
 
 export default function ExpertiseSection({ items }: ExpertiseSectionProps) {
   return (
-    <section className="profile-section" id="expertise">
+    <section className="profile-section profile-expertise" id="expertise">
       <SectionIntro
         eyebrow="AREAS OF EXPERTISE"
         title="What this professional is known for."
@@ -15,20 +15,23 @@ export default function ExpertiseSection({ items }: ExpertiseSectionProps) {
         align="split"
       />
 
-      <div className="expertise-grid">
-        {items.map((item) => (
-          <article
+      <ol className="expertise-ledger">
+        {items.map((item, index) => (
+          <li
             key={item.id}
-            className={`expertise-card ${item.featured ? "expertise-card--featured" : ""}`}
+            className={`expertise-ledger__item ${item.featured ? "expertise-ledger__item--featured" : ""}`}
           >
-            <span className="expertise-card__badge">
-              {item.featured ? "Featured expertise" : "Expertise"}
+            <span className="expertise-ledger__index">
+              {String(index + 1).padStart(2, "0")}
             </span>
-            <h3>{item.name}</h3>
-            {item.context ? <p>{item.context}</p> : null}
-          </article>
+
+            <div className="expertise-ledger__content">
+              <h3>{item.name}</h3>
+              {item.context ? <p>{item.context}</p> : null}
+            </div>
+          </li>
         ))}
-      </div>
+      </ol>
     </section>
   );
 }

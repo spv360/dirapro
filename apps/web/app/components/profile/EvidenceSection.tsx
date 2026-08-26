@@ -9,9 +9,9 @@ export default function EvidenceSection({ items }: EvidenceSectionProps) {
   return (
     <section className="profile-section profile-section--evidence" id="evidence">
       <SectionIntro
-        eyebrow="EVIDENCE"
-        title="What supports this professional identity."
-        description="Evidence should reinforce the profile with credibility signals, not overwhelm it with dashboard behavior."
+        eyebrow="IDENTITY SIGNALS"
+        title="Identity Signals"
+        description="A concise view of the work and recognition behind this identity."
         align="split"
       />
 
