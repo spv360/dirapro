@@ -40,6 +40,8 @@ export type Achievement = {
   issuer: string;
   period: string;
   description?: string;
+  image?: string;
+  imageAlt?: string;
   sourceType?: SourceType;
 };
 
@@ -53,6 +55,8 @@ export type Contribution = {
   impact?: string;
   tags: string[];
   link?: string;
+  image?: string;
+  imageAlt?: string;
   sourceType?: SourceType;
 };
 
@@ -96,6 +100,48 @@ export type EvidenceSignal = {
   context?: string;
 };
 
+export type PublicMomentType =
+  | "News"
+  | "Event"
+  | "Publication"
+  | "Interview"
+  | "Recognition"
+  | "Announcement";
+
+export type PublicMoment = {
+  id: string;
+  type: PublicMomentType;
+  title: string;
+  organization: string;
+  date: string;
+  summary?: string;
+  link?: string;
+  image?: string;
+  imageAlt?: string;
+};
+
+export type CurrentMoment = {
+  updated: string;
+  moments: CurrentMomentItem[];
+};
+
+export type CurrentMomentItem = {
+  mediaType: "image" | "video";
+  type: string;
+  title: string;
+  date: string;
+  image: string;
+  imageAlt: string;
+  organization?: string;
+  summary: string;
+  focus?: string[];
+};
+
+export type ConnectionConfig = {
+  enabled: boolean;
+  label: string;
+};
+
 export type DiraProfile = {
   username: string;
   identity: ProfileIdentity;
@@ -107,6 +153,9 @@ export type DiraProfile = {
   media: MediaItem[];
   publicPresence: PublicPresenceLink[];
   evidence: EvidenceSignal[];
+  currentMoment: CurrentMoment;
+  publicMoments: PublicMoment[];
+  connection: ConnectionConfig;
 };
 
 export const demoProfile: DiraProfile = {
@@ -122,6 +171,101 @@ export const demoProfile: DiraProfile = {
     biography:
       "Alex Morgan works across enterprise technology, executive advisory, and public knowledge sharing. Over the last sixteen years, Alex has led platform modernization programs, advised leadership teams on responsible AI adoption, built operating structures for large engineering organizations, and translated technical capability into decisions that executives, educators, and public institutions can trust. The result is a career defined not only by systems built, but by the professional judgment, stewardship, and evidence that support that work.",
     initials: "AM",
+  },
+  currentMoment: {
+    updated: "August 2026",
+    moments: [
+      {
+        mediaType: "image",
+        type: "Speaking",
+        title: "Future Technology Summit",
+        date: "June 2026",
+        image: "/profile/alex-speaking.webp",
+        imageAlt: "Alex Morgan speaking at the Future Technology Summit.",
+        organization: "Future Technology Summit",
+        summary: "Speaking on building reliable AI systems for large organizations.",
+        focus: ["AI Infrastructure", "Responsible AI"],
+      },
+      {
+        mediaType: "image",
+        type: "Building",
+        title: "AI Platform Architecture",
+        date: "May 2026",
+        image: "/profile/alex-building.webp",
+        imageAlt: "Alex Morgan working on an AI platform architecture.",
+        organization: "Alex Morgan Studio",
+        summary: "Shaping the architecture and operating model behind dependable enterprise AI.",
+        focus: ["Platform Engineering", "Architecture"],
+      },
+      {
+        mediaType: "image",
+        type: "Project",
+        title: "Enterprise AI Platform",
+        date: "April 2026",
+        image: "/profile/alex-platform.webp",
+        imageAlt: "An enterprise AI platform project led by Alex Morgan.",
+        organization: "Enterprise Platform Group",
+        summary: "Turning responsible AI principles into an operating platform for large organizations.",
+        focus: ["Enterprise AI", "Institutional Systems"],
+      },
+      {
+        mediaType: "image",
+        type: "Published",
+        title: "AI / Technology Publication",
+        date: "March 2026",
+        image: "/profile/alex-publication.webp",
+        imageAlt: "Alex Morgan contributing to an AI and technology publication.",
+        organization: "MIT Sloan Management Review",
+        summary: "A practical framework for moving AI from experimentation into accountable practice.",
+        focus: ["Public Knowledge", "AI Governance"],
+      },
+    ],
+  },
+
+  publicMoments: [
+    {
+      id: "moment-ai-summit",
+      type: "Event",
+      title: "Future Technology Summit",
+      organization: "Future Technology Summit",
+      date: "June 2026",
+      summary: "Speaking on building reliable AI systems for large organizations.",
+    },
+    {
+      id: "moment-ai-article",
+      type: "Publication",
+      title: "Designing reliable AI operating models",
+      organization: "MIT Sloan Management Review",
+      date: "May 2026",
+      summary:
+        "A practical framework for moving AI from experimentation into accountable institutional practice.",
+      link: "https://sloanreview.mit.edu/",
+      image: "/profile/alex-publication.webp",
+      imageAlt: "Alex Morgan contributing to a technology publication.",
+    },
+    {
+      id: "moment-advisory",
+      type: "Recognition",
+      title: "Responsible AI Advisory Appointment",
+      organization: "Digital Policy Forum",
+      date: "April 2026",
+      summary:
+        "Joined a multidisciplinary working group focused on practical AI safeguards.",
+    },
+    {
+      id: "moment-interview",
+      type: "Interview",
+      title: "The future of enterprise AI",
+      organization: "Technology Leadership Review",
+      date: "March 2026",
+      summary:
+        "Discussing how organizations can scale AI while maintaining operational accountability.",
+    },
+  ],
+
+  connection: {
+    enabled: true,
+    label: "Connect with Alex",
   },
   expertise: [
     {
@@ -211,6 +355,8 @@ export const demoProfile: DiraProfile = {
       period: "2024",
       description:
         "Recognized for leading high-trust enterprise platform transformation programs.",
+      image: "/profile/alex-achievement.webp",
+      imageAlt: "Recognition for Alex Morgan's enterprise technology leadership.",
       sourceType: "external",
     },
     {
@@ -257,6 +403,8 @@ export const demoProfile: DiraProfile = {
         "Enabled faster model delivery while introducing stronger observability, review controls, and service ownership.",
       tags: ["AI operations", "Platform governance", "Enterprise delivery"],
       link: "https://www.northstar.com/insights/ai-governance",
+      image: "/profile/alex-platform.webp",
+      imageAlt: "Enterprise AI platform foundation led by Alex Morgan.",
       sourceType: "self",
     },
     {
@@ -271,6 +419,8 @@ export const demoProfile: DiraProfile = {
         "Helped non-technical leaders make more grounded technology decisions.",
       tags: ["Executive education", "Responsible AI", "Leadership"],
       link: "https://professionalstudies.columbia.edu/",
+      image: "/profile/alex-building.webp",
+      imageAlt: "Alex Morgan building an executive responsible AI program.",
       sourceType: "external",
     },
     {
@@ -365,7 +515,7 @@ export const demoProfile: DiraProfile = {
       label: "Alex Morgan on LinkedIn",
       url: "https://www.linkedin.com/in/alex-morgan-identity/",
       category: "social",
-      descriptor: "Professional updates, appointments, and speaking activity.",
+      descriptor: "Updates, appointments, and speaking activity.",
       sourceType: "self",
       featured: true,
     },
@@ -375,7 +525,7 @@ export const demoProfile: DiraProfile = {
       label: "@alexmorgan",
       url: "https://x.com/alexmorgan",
       category: "social",
-      descriptor: "Short-form commentary on systems, institutions, and responsible AI.",
+      descriptor: "Commentary on systems and responsible AI.",
       sourceType: "self",
     },
     {
@@ -384,7 +534,7 @@ export const demoProfile: DiraProfile = {
       label: "Alex Morgan",
       url: "https://www.instagram.com/alexmorgan/",
       category: "social",
-      descriptor: "Selected moments from public talks, workshops, and events.",
+      descriptor: "Talks, workshops, and events.",
       sourceType: "self",
     },
     {
@@ -393,7 +543,7 @@ export const demoProfile: DiraProfile = {
       label: "Alex Morgan",
       url: "https://www.facebook.com/alexmorgan",
       category: "social",
-      descriptor: "Public-facing announcements and event notices.",
+      descriptor: "Announcements and event notices.",
       sourceType: "self",
     },
     {
@@ -402,7 +552,7 @@ export const demoProfile: DiraProfile = {
       label: "Alex Morgan on YouTube",
       url: "https://www.youtube.com/@alexmorgan",
       category: "social",
-      descriptor: "Talk recordings, short lectures, and briefings.",
+      descriptor: "Talk recordings, lectures, and briefings.",
       sourceType: "self",
       featured: true,
     },

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import type { Contribution } from "../../data/profile";
 import SectionIntro from "./SectionIntro";
 
@@ -9,7 +10,7 @@ export default function ContributionsSection({
   items,
 }: ContributionsSectionProps) {
   return (
-    <section className="profile-section" id="contributions">
+    <section className="profile-section profile-section--contributions" id="contributions">
       <SectionIntro
         eyebrow="CONTRIBUTIONS"
         title="What this person has contributed through their work."
@@ -18,33 +19,40 @@ export default function ContributionsSection({
       />
 
       <div className="contribution-grid">
-        {items.map((item) => (
-          <article key={item.id} className="contribution-card">
-            <div className="contribution-card__top">
-              <span>{item.contributionType}</span>
-              {item.period ? <span>{item.period}</span> : null}
-            </div>
-
-            <h3>{item.title}</h3>
-            {item.organization ? (
-              <p className="contribution-organization">{item.organization}</p>
+        {items.map((item, index) => (
+          <article key={item.id} className={`contribution-card ${index === 0 ? "contribution-card--featured" : ""}`}>
+            {item.image ? (
+              <div className="contribution-card__media">
+                <Image src={item.image} alt={item.imageAlt ?? item.title} fill sizes="(max-width: 900px) 100vw, 42vw" />
+              </div>
             ) : null}
+            <div className="contribution-card__details">
+              <div className="contribution-card__top">
+                <span>{item.contributionType}</span>
+                {item.period ? <span>{item.period}</span> : null}
+              </div>
 
-            <p className="contribution-summary">{item.summary}</p>
+              <h3>{item.title}</h3>
+              {item.organization ? (
+                <p className="contribution-organization">{item.organization}</p>
+              ) : null}
 
-            {item.impact ? <p className="contribution-impact">{item.impact}</p> : null}
+              <p className="contribution-summary">{item.summary}</p>
 
-            <div className="contribution-tags">
-              {item.tags.map((tag) => (
-                <span key={`${item.id}-${tag}`}>{tag}</span>
-              ))}
+              {item.impact ? <p className="contribution-impact">{item.impact}</p> : null}
+
+              <div className="contribution-tags">
+                {item.tags.map((tag) => (
+                  <span key={`${item.id}-${tag}`}>{tag}</span>
+                ))}
+              </div>
+
+              {item.link ? (
+                <a href={item.link} target="_blank" rel="noreferrer" className="contribution-link">
+                  Related reference ↗
+                </a>
+              ) : null}
             </div>
-
-            {item.link ? (
-              <a href={item.link} target="_blank" rel="noreferrer" className="contribution-link">
-                Related reference ↗
-              </a>
-            ) : null}
           </article>
         ))}
       </div>

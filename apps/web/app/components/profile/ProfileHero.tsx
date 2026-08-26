@@ -10,6 +10,9 @@ export default function ProfileHero({ profile }: ProfileHeroProps) {
   const featuredLinks = profile.publicPresence.filter((link) => link.featured);
   const featuredExpertise = profile.expertise.filter((item) => item.featured);
   const heroSignals = profile.evidence.slice(0, 4);
+  const connectUrl =
+    profile.publicPresence.find((link) => link.platform === "LinkedIn")?.url ??
+    "#public-presence";
 
   return (
     <section className="profile-hero">
@@ -44,6 +47,17 @@ export default function ProfileHero({ profile }: ProfileHeroProps) {
             </li>
           ))}
         </ul>
+
+        {profile.connection.enabled ? (
+          <a
+            href={connectUrl}
+            className="profile-connection-cta"
+            target="_blank"
+            rel="noreferrer"
+          >
+            {profile.connection.label}
+          </a>
+        ) : null}
 
         <div className="profile-hero-links" aria-label="Primary public presence links">
           {featuredLinks.map((link) => (
