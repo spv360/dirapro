@@ -1,5 +1,8 @@
 {
   "devDependencies": {
     "playwright": "^1.62.1"
+  },
+  "dependencies": {
+    "vercel": "^59.5.0"
   }
 }
