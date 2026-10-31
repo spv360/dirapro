@@ -4,6 +4,7 @@ import SectionIntro from "./SectionIntro";
 
 type PublicPresenceSectionProps = {
   links: PublicPresenceLink[];
+  name?: string;
 };
 
 const groupDescriptions = {
@@ -17,6 +18,7 @@ const groupDescriptions = {
 
 export default function PublicPresenceSection({
   links,
+  name = "Alex Morgan",
 }: PublicPresenceSectionProps) {
   const socialLinks = links.filter((link) => link.category === "social");
   const professionalLinks = links.filter(
@@ -29,7 +31,7 @@ export default function PublicPresenceSection({
       <SectionIntro
         eyebrow="PUBLIC PRESENCE"
         title="Public Presence"
-        description="Official places to find Alex Morgan across the public web."
+        description={`Official places to find ${name} across the public web.`}
         align="split"
       />
 

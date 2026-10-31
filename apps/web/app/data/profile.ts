@@ -13,6 +13,9 @@ export type ProfileIdentity = {
   biographyPreview: string;
   biography: string;
   initials: string;
+  /** Uploaded portrait / cover (dynamic profiles). */
+  image?: string;
+  coverImage?: string;
 };
 
 export type ExpertiseItem = {
@@ -42,7 +45,16 @@ export type Achievement = {
   description?: string;
   image?: string;
   imageAlt?: string;
+  link?: string;
   sourceType?: SourceType;
+};
+
+export type EducationItem = {
+  id: string;
+  institution: string;
+  qualification: string;
+  period: string;
+  description?: string;
 };
 
 export type Contribution = {
@@ -148,6 +160,7 @@ export type DiraProfile = {
   expertise: ExpertiseItem[];
   appointments: Appointment[];
   achievements: Achievement[];
+  education?: EducationItem[];
   contributions: Contribution[];
   knowledge: KnowledgeItem[];
   media: MediaItem[];

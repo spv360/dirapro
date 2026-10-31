@@ -1,21 +1,13 @@
-import Link from "next/link";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import AchievementsSection from "../../components/profile/AchievementsSection";
-import ContributionsSection from "../../components/profile/ContributionsSection";
-import EvidenceSection from "../../components/profile/EvidenceSection";
-import ExperienceSection from "../../components/profile/ExperienceSection";
-import ExpertiseSection from "../../components/profile/ExpertiseSection";
-import ProfileHero from "../../components/profile/ProfileHero";
-import PublicPresenceSection from "../../components/profile/PublicPresenceSection";
-import Reveal from "../../components/Reveal";
+import PublicProfileView from "../../components/profile/PublicProfileView";
 import { demoProfile } from "../../data/profile";
-import CurrentMomentSection from "../../components/profile/CurrentMomentSection";
-import ProfileClosingSection from "../../components/profile/ProfileClosingSection";
-import PublicMomentsSection from "../../components/profile/PublicMomentsSection";
-import ProfessionalJourney from "../../components/profile/ProfessionalJourney";
 import { withJourneyMoments } from "../../lib/current-moment";
 import { listPublic } from "../../lib/journey-store";
 import { isProfileOwner } from "../../lib/owner-auth";
+import { profiles } from "../../lib/platform";
+import { currentUser } from "../../lib/platform/session";
+import { toDiraProfile } from "../../lib/platform/to-profile";
 
 type ProfilePageProps = {
   params: Promise<{
@@ -23,96 +15,58 @@ type ProfilePageProps = {
   }>;
 };
 
+export async function generateMetadata({ params }: ProfilePageProps): Promise<Metadata> {
+  const { username } = await params;
+  if (username === demoProfile.username) return {};
+  const agg = await profiles.getByUsernameForViewer(username, null);
+  if (!agg) return { robots: { index: false } };
+  return { title: `${agg.profile.fullName} · DiraPro`, description: agg.profile.headline || undefined };
+}
+
 export default async function ProfilePage({
   params,
 }: ProfilePageProps) {
   const { username } = await params;
 
-  if (username !== demoProfile.username) {
-    notFound();
+  if (username === demoProfile.username) {
+    const journeyItems = await listPublic(demoProfile.username);
+    return (
+      <main>
+        <PublicProfileView
+          profile={demoProfile}
+          journeyItems={journeyItems}
+          isOwner={await isProfileOwner(demoProfile.username)}
+          manageHref={`/profile/${demoProfile.username}/share`}
+          currentMoment={withJourneyMoments(demoProfile.currentMoment, journeyItems)}
+        />
+      </main>
+    );
   }
 
-  const profile = demoProfile;
-  const isOwner = await isProfileOwner(profile.username);
-  const journeyItems = await listPublic(profile.username);
-  const currentMoment = withJourneyMoments(profile.currentMoment, journeyItems);
+  const viewer = await currentUser();
+  // Drafts resolve only for their owner; everyone else gets a 404.
+  const agg = await profiles.getByUsernameForViewer(username, viewer?.id ?? null);
+  if (!agg) notFound();
+
+  const profile = toDiraProfile(agg);
+  const isOwner = viewer?.id === agg.profile.ownerId;
+  const journeyItems = await listPublic(agg.profile.id);
+  const isDraft = agg.profile.status !== "published";
 
   return (
-    <main className="profile-page">
-      <nav className="profile-nav">
-        <Link href="/" className="brand">
-          Dira<span>Pro</span>
-        </Link>
-
-        <Link href="/" className="profile-nav-back">
-          Back to DiraPro ↗
-        </Link>
-      </nav>
-
-      <ProfileHero profile={profile} />
-
-      <div className="profile-story-grid">
-        <Reveal>
-          <ExpertiseSection items={profile.expertise} />
-        </Reveal>
-
-        <Reveal>
-          <CurrentMomentSection
-            moment={currentMoment}
-          />
-        </Reveal>
-      </div>
-
-      <Reveal>
-        <ProfessionalJourney
-          items={journeyItems}
-          username={profile.username}
-          isOwner={isOwner}
-        />
-      </Reveal>
-
-      <Reveal>
-        <ExperienceSection
-          biography={profile.identity.biography}
-          appointments={profile.appointments}
-        />
-      </Reveal>
-
-      <Reveal>
-        <AchievementsSection items={profile.achievements} />
-      </Reveal>
-
-      <Reveal>
-        <ContributionsSection items={profile.contributions} />
-      </Reveal>
-
-      <Reveal>
-        <PublicMomentsSection
-          items={profile.publicMoments}
-          knowledge={profile.knowledge}
-          media={profile.media}
-        />
-      </Reveal>
-
-      <Reveal>
-        <PublicPresenceSection links={profile.publicPresence} />
-      </Reveal>
-
-      <Reveal>
-        <EvidenceSection items={profile.evidence} />
-      </Reveal>
-
-      <ProfileClosingSection profile={profile} />
-
-      <footer className="profile-footer">
-        <span>© {new Date().getFullYear()} DiraPro</span>
-
-        <Link href={`/profile/${profile.username}/share`}>
-          {isOwner ? "Manage updates" : "Owner sign in"}
-        </Link>
-
-        <Link href="/">Build your Dira identity ↗</Link>
-      </footer>
+    <main>
+      {isDraft ? (
+        <p className="acct-draft-banner" role="status">
+          This profile is a draft and visible only to you. <a href="/dashboard">Back to dashboard</a>
+        </p>
+      ) : null}
+      <PublicProfileView
+        profile={profile}
+        journeyItems={journeyItems}
+        isOwner={isOwner}
+        manageHref={isOwner ? `/profile/${username}/share` : "/login"}
+        currentMoment={withJourneyMoments(profile.currentMoment, journeyItems)}
+      />
     </main>
   );
 }

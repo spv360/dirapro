@@ -1,6 +1,7 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { cookies } from "next/headers";
 import { demoProfile } from "../data/profile";
+import { currentProfile, sameOrigin } from "./platform/session";
 import { publishingDisabled, publishingDisabledResponse } from "./publishing";
 
 /**
@@ -68,29 +69,28 @@ export async function isProfileOwner(profileId: string): Promise<boolean> {
 export const ownedProfileId = demoProfile.username;
 
 /**
- * Guard for owner-only route handlers. Returns a Response to send when the
- * request is rejected, or null when authorized. Mutations must be same-origin.
+ * Profile id the current request may manage: the signed-in account's profile, or
+ * the demo profile for a valid owner-passcode session. Null when neither.
  */
-export async function guardOwner(request: Request): Promise<Response | null> {
-  if (!["GET", "HEAD"].includes(request.method) && publishingDisabled()) {
-    return publishingDisabledResponse();
+export async function resolveOwnerProfileId(): Promise<string | null> {
+  const account = await currentProfile();
+  if (account) return account.aggregate.profile.id;
+  return (await isProfileOwner(ownedProfileId)) ? ownedProfileId : null;
+}
+
+/**
+ * Guard for owner-only route handlers. Returns a Response when the request is
+ * rejected, or the profile id the caller owns. Mutations must be same-origin.
+ */
+export async function authorizeOwner(request: Request): Promise<Response | { profileId: string }> {
+  const mutating = !["GET", "HEAD"].includes(request.method);
+  if (mutating && publishingDisabled()) return publishingDisabledResponse();
+
+  if (mutating && !sameOrigin(request)) {
+    return Response.json({ error: "Cross-origin request rejected." }, { status: 403 });
   }
 
-  if (!ownerAuthConfigured()) {
-    return Response.json({ error: "Owner publishing is not configured on this server." }, { status: 503 });
-  }
-
-  if (!["GET", "HEAD"].includes(request.method)) {
-    const origin = request.headers.get("origin");
-    const host = request.headers.get("host");
-    if (!origin || !host || new URL(origin).host !== host) {
-      return Response.json({ error: "Cross-origin request rejected." }, { status: 403 });
-    }
-  }
-
-  if (!(await isProfileOwner(ownedProfileId))) {
-    return Response.json({ error: "Sign in as the profile owner to continue." }, { status: 401 });
-  }
-
-  return null;
+  const profileId = await resolveOwnerProfileId();
+  if (profileId) return { profileId };
+  return Response.json({ error: "Sign in as the profile owner to continue." }, { status: 401 });
 }

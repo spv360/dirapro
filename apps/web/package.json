@@ -7,8 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "node --test tests/publishing.test.ts",
-    "test:integration": "node --test tests/api-guard.integration.test.ts"
+    "test": "node --test tests/publishing.test.ts tests/accounts.test.ts",
+    "test:integration": "node --test --test-concurrency=1 tests/api-guard.integration.test.ts tests/accounts.integration.test.ts"
   },
   "dependencies": {
     "next": "16.3.2",

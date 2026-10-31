@@ -1,9 +1,11 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import JourneyStudio from "../../../components/profile/JourneyStudio";
 import OwnerSignIn from "../../../components/profile/OwnerSignIn";
 import { demoProfile } from "../../../data/profile";
 import { listAll } from "../../../lib/journey-store";
+import { profiles } from "../../../lib/platform";
+import { currentUser } from "../../../lib/platform/session";
 import { PUBLISHING_DISABLED_MESSAGE, publishingDisabled } from "../../../lib/publishing";
 import { isProfileOwner, ownerAuthConfigured } from "../../../lib/owner-auth";
 
@@ -18,11 +20,22 @@ type SharePageProps = {
 
 export default async function SharePage({ params }: SharePageProps) {
   const { username } = await params;
-  if (username !== demoProfile.username) notFound();
+  const isDemo = username === demoProfile.username;
 
   const disabled = publishingDisabled();
   const configured = ownerAuthConfigured();
-  const isOwner = !disabled && configured && (await isProfileOwner(username));
+  let isOwner = false;
+  let journeyProfileId = username;
+
+  if (isDemo) {
+    isOwner = !disabled && configured && (await isProfileOwner(username));
+  } else {
+    const agg = await profiles.getByUsernameForViewer(username, (await currentUser())?.id ?? null);
+    if (!agg) notFound();
+    isOwner = !disabled && agg.profile.ownerId === (await currentUser())?.id;
+    journeyProfileId = agg.profile.id;
+    if (!disabled && !isOwner) redirect("/login");
+  }
 
   return (
     <main className="profile-page">
@@ -48,7 +61,7 @@ export default async function SharePage({ params }: SharePageProps) {
         ) : isOwner ? (
           <JourneyStudio
             username={username}
-            initialItems={await listAll(username)}
+            initialItems={await listAll(journeyProfileId)}
           />
         ) : (
           <OwnerSignIn configured={configured} />

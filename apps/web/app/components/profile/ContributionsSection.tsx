@@ -23,7 +23,7 @@ export default function ContributionsSection({
           <article key={item.id} className={`contribution-card ${index === 0 ? "contribution-card--featured" : ""}`}>
             {item.image ? (
               <div className="contribution-card__media">
-                <Image src={item.image} alt={item.imageAlt ?? item.title} fill sizes="(max-width: 900px) 100vw, 42vw" />
+                <Image src={item.image} alt={item.imageAlt ?? item.title} fill sizes="(max-width: 900px) 100vw, 42vw" unoptimized={item.image.startsWith("/api/")} />
               </div>
             ) : null}
             <div className="contribution-card__details">

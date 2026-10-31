@@ -45,3 +45,23 @@ Owners publish updates at `/profile/<username>/share`. Configure the server with
 
 Persistence is file-backed and needs a persistent disk. Serverless hosting requires swapping
 `app/lib/journey-store.ts` for a database and object storage.
+
+## Accounts, onboarding and dashboard (local only)
+
+Professionals can register at `/register`, build a profile through a 9-step guided setup at `/onboarding`, manage it from `/dashboard`, and publish it at `/profile/<username>`. `alex-morgan` remains the built-in demo profile.
+
+Everything runs against local storage, behind adapter interfaces in `app/lib/platform/ports.ts` (`AuthService`, `ProfileRepository`, `MediaStorage`) so Supabase can replace them without touching routes or UI:
+
+- Data: `<DIRA_DATA_DIR or .data>/platform.json` (users, profiles, sessions).
+- Images: `<DIRA_DATA_DIR or .data>/uploads/profiles/<profileId>/`. JPEG/PNG/WebP, 8 MB max, content-type and magic bytes checked.
+- Passwords: scrypt with per-user salt. Sessions: random token stored as SHA-256, HttpOnly `dira_session` cookie, TTL `DIRA_SESSION_TTL_SECONDS` (default 7 days).
+- Draft profiles and their images are visible only to the owner; published profiles are public.
+
+On Vercel (`VERCEL` set) or with `DIRA_PUBLISHING_DISABLED=true`, registration, sign-in, profile edits, publishing and uploads return HTTP 503 (`ACCOUNTS_DISABLED`; Journey writes keep `PUBLISHING_DISABLED`). Public profiles keep working.
+
+Known local-only limitations: JSON file storage is not durable or multi-instance safe, login throttling is in memory, uploaded-but-never-saved images are not garbage collected, and there is no email verification or password reset.
+
+```bash
+npm test                 # unit tests
+npm run build && npm run test:integration   # HTTP tests against a production build
+```
