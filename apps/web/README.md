@@ -34,3 +34,14 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Professional Journey publishing
+
+Owners publish updates at `/profile/<username>/share`. Configure the server with:
+
+- `DIRA_OWNER_PASSCODE` (8+ chars) – owner sign-in passcode
+- `DIRA_SESSION_SECRET` (16+ chars) – signs the HttpOnly session cookie
+- `DIRA_DATA_DIR` (optional, default `apps/web/.data`) – JSON store + media uploads
+
+Persistence is file-backed and needs a persistent disk. Serverless hosting requires swapping
+`app/lib/journey-store.ts` for a database and object storage.
