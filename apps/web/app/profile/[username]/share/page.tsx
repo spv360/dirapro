@@ -4,6 +4,7 @@ import JourneyStudio from "../../../components/profile/JourneyStudio";
 import OwnerSignIn from "../../../components/profile/OwnerSignIn";
 import { demoProfile } from "../../../data/profile";
 import { listAll } from "../../../lib/journey-store";
+import { PUBLISHING_DISABLED_MESSAGE, publishingDisabled } from "../../../lib/publishing";
 import { isProfileOwner, ownerAuthConfigured } from "../../../lib/owner-auth";
 
 export const metadata = {
@@ -19,8 +20,9 @@ export default async function SharePage({ params }: SharePageProps) {
   const { username } = await params;
   if (username !== demoProfile.username) notFound();
 
+  const disabled = publishingDisabled();
   const configured = ownerAuthConfigured();
-  const isOwner = configured && (await isProfileOwner(username));
+  const isOwner = !disabled && configured && (await isProfileOwner(username));
 
   return (
     <main className="profile-page">
@@ -34,7 +36,16 @@ export default async function SharePage({ params }: SharePageProps) {
       </nav>
 
       <section className="profile-section journey-studio-page">
-        {isOwner ? (
+        {disabled ? (
+          <div className="journey-signin">
+            <p className="section-eyebrow">PROFESSIONAL JOURNEY</p>
+            <h1>Publishing is temporarily unavailable.</h1>
+            <p>{PUBLISHING_DISABLED_MESSAGE}</p>
+            <Link href={`/profile/${username}`} className="button button-secondary">
+              Back to profile
+            </Link>
+          </div>
+        ) : isOwner ? (
           <JourneyStudio
             username={username}
             initialItems={await listAll(username)}
