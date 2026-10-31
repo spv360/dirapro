@@ -1,6 +1,7 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { cookies } from "next/headers";
 import { demoProfile } from "../data/profile";
+import { publishingDisabled, publishingDisabledResponse } from "./publishing";
 
 /**
  * Minimal owner authentication: a single owner passcode (env) exchanged for an
@@ -71,6 +72,10 @@ export const ownedProfileId = demoProfile.username;
  * request is rejected, or null when authorized. Mutations must be same-origin.
  */
 export async function guardOwner(request: Request): Promise<Response | null> {
+  if (!["GET", "HEAD"].includes(request.method) && publishingDisabled()) {
+    return publishingDisabledResponse();
+  }
+
   if (!ownerAuthConfigured()) {
     return Response.json({ error: "Owner publishing is not configured on this server." }, { status: 503 });
   }

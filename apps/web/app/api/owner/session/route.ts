@@ -1,4 +1,5 @@
 import { cookies } from "next/headers";
+import { publishingDisabled, publishingDisabledResponse } from "../../../lib/publishing";
 import {
   SESSION_COOKIE,
   createSessionToken,
@@ -12,6 +13,8 @@ let failures = 0;
 let lockedUntil = 0;
 
 export async function POST(request: Request) {
+  if (publishingDisabled()) return publishingDisabledResponse();
+
   if (!ownerAuthConfigured()) {
     return Response.json({ error: "Owner publishing is not configured on this server." }, { status: 503 });
   }
