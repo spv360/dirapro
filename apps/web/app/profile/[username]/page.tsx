@@ -12,6 +12,10 @@ import { demoProfile } from "../../data/profile";
 import CurrentMomentSection from "../../components/profile/CurrentMomentSection";
 import ProfileClosingSection from "../../components/profile/ProfileClosingSection";
 import PublicMomentsSection from "../../components/profile/PublicMomentsSection";
+import ProfessionalJourney from "../../components/profile/ProfessionalJourney";
+import { withJourneyMoments } from "../../lib/current-moment";
+import { listPublic } from "../../lib/journey-store";
+import { isProfileOwner } from "../../lib/owner-auth";
 
 type ProfilePageProps = {
   params: Promise<{
@@ -29,6 +33,9 @@ export default async function ProfilePage({
   }
 
   const profile = demoProfile;
+  const isOwner = await isProfileOwner(profile.username);
+  const journeyItems = await listPublic(profile.username);
+  const currentMoment = withJourneyMoments(profile.currentMoment, journeyItems);
 
   return (
     <main className="profile-page">
@@ -51,10 +58,18 @@ export default async function ProfilePage({
 
         <Reveal>
           <CurrentMomentSection
-            moment={profile.currentMoment}
+            moment={currentMoment}
           />
         </Reveal>
       </div>
+
+      <Reveal>
+        <ProfessionalJourney
+          items={journeyItems}
+          username={profile.username}
+          isOwner={isOwner}
+        />
+      </Reveal>
 
       <Reveal>
         <ExperienceSection
@@ -91,6 +106,10 @@ export default async function ProfilePage({
 
       <footer className="profile-footer">
         <span>© {new Date().getFullYear()} DiraPro</span>
+
+        <Link href={`/profile/${profile.username}/share`}>
+          {isOwner ? "Manage updates" : "Owner sign in"}
+        </Link>
 
         <Link href="/">Build your Dira identity ↗</Link>
       </footer>

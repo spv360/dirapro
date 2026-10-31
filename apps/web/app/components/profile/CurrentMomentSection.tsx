@@ -60,6 +60,7 @@ export default function CurrentMomentSection({ moment }: CurrentMomentSectionPro
           fill
           sizes="(max-width: 900px) 100vw, 50vw"
           priority={activeIndex === 0}
+          unoptimized={activeMoment.image.startsWith("/api/")}
           className="profile-current-moment__image"
         />
       </div>
