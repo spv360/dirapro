@@ -2,7 +2,9 @@ import { promises as fs } from "node:fs";
 import path from "node:path";
 import { isValidMediaFile } from "../../../../data/journey";
 import { findByMediaFile, isPublic, uploadsDir } from "../../../../lib/journey-store";
-import { isProfileOwner, ownedProfileId } from "../../../../lib/owner-auth";
+import { resolveOwnerProfileId } from "../../../../lib/owner-auth";
+import { demoProfile } from "../../../../data/profile";
+import { profiles } from "../../../../lib/platform";
 
 const TYPES: Record<string, string> = {
   jpg: "image/jpeg",
@@ -20,9 +22,17 @@ export async function GET(request: Request, { params }: Context) {
 
   // Media of drafts, archived and private updates (and unattached uploads) is owner-only.
   const item = await findByMediaFile(file);
-  const visible = item ? isPublic(item) : false;
-  if (!visible && !(await isProfileOwner(ownedProfileId))) {
-    return new Response("Not found", { status: 404 });
+  // Public only when the item is published+public AND its profile is itself live.
+  let visible = item ? isPublic(item) : false;
+  if (item && visible && item.profileId !== demoProfile.username) {
+    visible = (await profiles.getById(item.profileId))?.profile.status === "published";
+  }
+  if (!visible) {
+    const owner = await resolveOwnerProfileId();
+    // Items belong to one profile; unattached uploads are visible to any signed-in owner.
+    if (!owner || (item && item.profileId !== owner)) {
+      return new Response("Not found", { status: 404 });
+    }
   }
 
   const fullPath = path.join(uploadsDir(), file);

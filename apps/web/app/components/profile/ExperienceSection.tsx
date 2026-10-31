@@ -19,10 +19,12 @@ export default function ExperienceSection({
         align="split"
       />
 
-      <div className="profile-biography-card">
-        <span>BIOGRAPHY</span>
-        <p>{biography}</p>
-      </div>
+      {biography ? (
+        <div className="profile-biography-card">
+          <span>BIOGRAPHY</span>
+          <p>{biography}</p>
+        </div>
+      ) : null}
 
       <div className="appointment-list">
         {appointments.map((item) => (

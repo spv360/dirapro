@@ -23,7 +23,7 @@ export default function AchievementsSection({
           <article key={item.id} className={`achievement-card ${index === 0 ? "achievement-card--featured" : ""}`}>
             {item.image ? (
               <div className="achievement-card__media">
-                <Image src={item.image} alt={item.imageAlt ?? item.title} fill sizes="(max-width: 900px) 100vw, 42vw" />
+                <Image src={item.image} alt={item.imageAlt ?? item.title} fill sizes="(max-width: 900px) 100vw, 42vw" unoptimized={item.image.startsWith("/api/")} />
               </div>
             ) : null}
             <div className="achievement-card__details">
@@ -35,9 +35,12 @@ export default function AchievementsSection({
               </div>
 
               <h3>{item.title}</h3>
-              <p className="achievement-issuer">{item.issuer}</p>
-              <p className="achievement-period">{item.period}</p>
+              {item.issuer ? <p className="achievement-issuer">{item.issuer}</p> : null}
+              {item.period ? <p className="achievement-period">{item.period}</p> : null}
               {item.description ? <p className="achievement-description">{item.description}</p> : null}
+              {item.link ? (
+                <a className="achievement-link" href={item.link} target="_blank" rel="noopener noreferrer">View credential ↗</a>
+              ) : null}
             </div>
           </article>
         ))}

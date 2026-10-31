@@ -4487,3 +4487,504 @@ footer {
     flex: 1 1 auto;
   }
 }
+
+/* ---------- Accounts, onboarding, dashboard ---------- */
+
+.acct-page {
+  min-height: 100vh;
+}
+
+.acct-card,
+.acct-onboarding,
+.acct-dashboard {
+  width: min(calc(100% - 48px), 720px);
+  margin: 0 auto;
+  padding: 56px 0 96px;
+}
+
+.acct-card--wide,
+.acct-dashboard,
+.acct-onboarding {
+  width: min(calc(100% - 48px), 860px);
+}
+
+.acct-card h1,
+.acct-onboarding h1,
+.acct-dashboard h1 {
+  margin: 12px 0 28px;
+  font-family: var(--font-editorial), Georgia, serif;
+  font-size: clamp(2.2rem, 5vw, 3.6rem);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+  font-weight: 600;
+  text-wrap: balance;
+}
+
+.acct-onboarding__head p:not(.section-eyebrow) {
+  margin: -12px 0 24px;
+  color: var(--muted);
+}
+
+.acct-form {
+  display: grid;
+  gap: 22px;
+}
+
+.acct-form .journey-field > label,
+.acct-image__label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.acct-hint {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.acct-alt {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.acct-alt a,
+.acct-hint a {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.acct-password {
+  position: relative;
+}
+
+.acct-password input {
+  padding-right: 72px !important;
+}
+
+.acct-toggle {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.acct-username {
+  display: flex;
+  align-items: stretch;
+  border: 1px solid var(--border);
+  background: #fff;
+}
+
+.acct-username span {
+  display: flex;
+  align-items: center;
+  padding: 0 0 0 14px;
+  color: var(--muted);
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.acct-username input {
+  border: 0 !important;
+  min-width: 0;
+}
+
+.acct-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+}
+
+.acct-saved {
+  margin: 0;
+  color: var(--accent);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.acct-steps {
+  display: flex;
+  gap: 6px;
+}
+
+.acct-steps button {
+  flex: 1;
+  height: 6px;
+  padding: 0;
+  border: 0;
+  background: rgba(17, 19, 24, 0.12);
+  cursor: pointer;
+}
+
+.acct-steps button.is-done {
+  background: var(--accent);
+  opacity: 0.55;
+}
+
+.acct-steps button.is-active {
+  background: var(--accent);
+}
+
+.acct-rows {
+  display: grid;
+  gap: 18px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.acct-row {
+  padding: 20px;
+  border: 1px solid rgba(17, 19, 24, 0.1);
+  background: var(--surface);
+}
+
+.acct-row__head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.acct-row__head strong {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.acct-row__tools {
+  display: flex;
+  flex-shrink: 0;
+  gap: 14px;
+}
+
+.acct-row__tools button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.acct-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.acct-grid > * {
+  min-width: 0;
+}
+
+.acct-grid__full {
+  grid-column: 1 / -1;
+}
+
+.acct-empty {
+  margin: 0;
+  padding: 20px;
+  border: 1px dashed rgba(17, 19, 24, 0.2);
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.acct-image__frame {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: #ece8dd;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.acct-image__frame--round {
+  width: 132px;
+  height: 132px;
+  border-radius: 50%;
+}
+
+.acct-image__frame--wide {
+  width: 100%;
+  max-width: 420px;
+  aspect-ratio: 16 / 9;
+}
+
+.acct-image__frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.acct-image__progress {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 6px;
+  background: rgba(17, 19, 24, 0.2);
+}
+
+.acct-image__progress span {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  transition: width 120ms linear;
+}
+
+.acct-image__actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.acct-preview {
+  margin-bottom: 24px;
+  max-height: 720px;
+  overflow: auto;
+  border: 1px solid rgba(17, 19, 24, 0.12);
+  background: var(--background);
+}
+
+.acct-draft-banner {
+  margin: 0;
+  padding: 10px 20px;
+  background: var(--accent-soft);
+  color: var(--foreground);
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+.acct-draft-banner a {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.acct-nav-user {
+  color: var(--muted);
+  font-size: 0.78rem;
+  overflow-wrap: anywhere;
+}
+
+.acct-identity {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.acct-identity h1 {
+  margin: 4px 0 6px;
+  font-size: clamp(2rem, 4.5vw, 3rem);
+}
+
+.acct-avatar {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 88px;
+  height: 88px;
+  overflow: hidden;
+  border-radius: 50%;
+  background: #12141b;
+  color: #f6f7fa;
+  font-family: var(--font-editorial), Georgia, serif;
+  font-size: 2.4rem;
+}
+
+.acct-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.acct-headline,
+.acct-handle {
+  margin: 0;
+  color: var(--muted);
+}
+
+.acct-status {
+  font-weight: 700;
+}
+
+.acct-status--published {
+  color: var(--accent);
+}
+
+.acct-completion {
+  margin: 32px 0 24px;
+}
+
+.acct-completion p {
+  margin: 10px 0 0;
+  font-size: 0.9rem;
+}
+
+.acct-completion__bar {
+  height: 6px;
+  background: rgba(17, 19, 24, 0.1);
+}
+
+.acct-completion__bar span {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+}
+
+.acct-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+}
+
+.acct-h2 {
+  margin: 48px 0 16px;
+  font-family: var(--font-editorial), Georgia, serif;
+  font-size: 1.8rem;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+
+.acct-sections {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  margin: 0 0 16px;
+  padding: 0;
+  list-style: none;
+  border: 1px solid rgba(17, 19, 24, 0.1);
+  background: rgba(17, 19, 24, 0.1);
+}
+
+.acct-sections a {
+  display: grid;
+  gap: 4px;
+  height: 100%;
+  padding: 18px 20px;
+  background: var(--surface);
+  transition: background 180ms ease;
+}
+
+.acct-sections a:hover,
+.acct-sections a:focus-visible {
+  background: var(--accent-soft);
+}
+
+.acct-sections span {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.acct-journey {
+  display: grid;
+  gap: 16px;
+  justify-items: start;
+  padding: 24px;
+  border: 1px solid rgba(17, 19, 24, 0.1);
+  background: var(--surface);
+}
+
+.acct-journey p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.acct-journey ul {
+  display: grid;
+  gap: 10px;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.acct-journey li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.acct-journey li span {
+  color: var(--muted);
+  font-size: 0.82rem;
+  text-transform: capitalize;
+}
+
+.profile-portrait-cover {
+  object-fit: cover;
+  opacity: 0.55;
+}
+
+.profile-portrait-photo {
+  position: absolute;
+  left: 42px;
+  bottom: 42px;
+  width: 172px;
+  height: 172px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 30px 80px rgba(17, 19, 24, 0.18);
+}
+
+.achievement-link {
+  display: inline-block;
+  margin-top: 10px;
+  color: var(--accent);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+@media (max-width: 640px) {
+  .acct-card,
+  .acct-onboarding,
+  .acct-dashboard,
+  .acct-card--wide {
+    width: calc(100% - 32px);
+    padding: 32px 0 64px;
+  }
+
+  .acct-grid,
+  .acct-sections {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .acct-identity {
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .acct-avatar {
+    width: 64px;
+    height: 64px;
+    font-size: 1.8rem;
+  }
+
+  .acct-username span {
+    display: none;
+  }
+
+  .profile-portrait-photo {
+    left: 24px;
+    bottom: 24px;
+    width: 126px;
+    height: 126px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .acct-image__progress span,
+  .acct-sections a {
+    transition: none;
+  }
+}

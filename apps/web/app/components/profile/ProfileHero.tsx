@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import type { DiraProfile } from "../../data/profile";
 import ProfileIdentityMeta from "./ProfileIdentityMeta";
@@ -81,7 +82,14 @@ export default function ProfileHero({ profile }: ProfileHeroProps) {
         <div className="profile-portrait">
           <div className="profile-portrait-orbit profile-portrait-orbit--one" />
           <div className="profile-portrait-orbit profile-portrait-orbit--two" />
-          <div className="profile-portrait-mark">{profile.identity.initials}</div>
+          {profile.identity.coverImage ? (
+            <Image className="profile-portrait-cover" src={profile.identity.coverImage} alt="" fill sizes="(max-width: 900px) 100vw, 40vw" unoptimized />
+          ) : null}
+          {profile.identity.image ? (
+            <Image className="profile-portrait-photo" src={profile.identity.image} alt={`Portrait of ${profile.identity.name}`} width={172} height={172} unoptimized />
+          ) : (
+            <div className="profile-portrait-mark">{profile.identity.initials}</div>
+          )}
           <span className="profile-portrait-caption">PROFESSIONAL IDENTITY</span>
         </div>
 

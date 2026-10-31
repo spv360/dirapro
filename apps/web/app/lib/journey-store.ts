@@ -9,7 +9,7 @@ import type { JourneyInput, JourneyItem } from "../data/journey";
  * (e.g. Vercel) need this module swapped for a database + object storage; the
  * exported functions are the only surface the rest of the app depends on.
  */
-const dataDir = () => process.env.DIRA_DATA_DIR || path.join(/*turbopackIgnore: true*/ process.cwd(), ".data");
+export const dataDir = () => process.env.DIRA_DATA_DIR || path.join(/*turbopackIgnore: true*/ process.cwd(), ".data");
 const dbFile = () => path.join(dataDir(), "journey.json");
 export const uploadsDir = () => path.join(dataDir(), "uploads");
 
