@@ -18,14 +18,22 @@ export default function KnowledgeSection({ items }: KnowledgeSectionProps) {
       <div className="knowledge-stack">
         {items.map((item) => (
           <article key={item.id} className="knowledge-card">
-            <div className="knowledge-card__meta">
-              <span>{item.format}</span>
-              <span>{item.venue}</span>
-              <span>{item.date}</span>
-            </div>
+            {item.format || item.venue || item.date ? (
+              <div className="knowledge-card__meta">
+                {item.format ? <span>{item.format}</span> : null}
+                {item.venue ? <span>{item.venue}</span> : null}
+                {item.date ? <span>{item.date}</span> : null}
+              </div>
+            ) : null}
 
             <h3>{item.title}</h3>
             <p>{item.summary}</p>
+
+            {item.relevantTopics?.length ? (
+              <div className="contribution-tags" aria-label="Relevant topics">
+                {item.relevantTopics.map((topic) => <span key={topic}>{topic}</span>)}
+              </div>
+            ) : null}
 
             {item.link ? (
               <a href={item.link} target="_blank" rel="noreferrer">

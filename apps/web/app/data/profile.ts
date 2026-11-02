@@ -80,6 +80,7 @@ export type KnowledgeItem = {
   date: string;
   summary: string;
   link?: string;
+  relevantTopics?: string[];
   sourceType?: SourceType;
 };
 
@@ -92,6 +93,15 @@ export type MediaItem = {
   summary: string;
   link?: string;
   sourceType?: SourceType;
+};
+
+export type PortfolioItem = {
+  id: string;
+  title: string;
+  description: string;
+  category?: string;
+  image?: string;
+  url?: string;
 };
 
 export type PublicPresenceLink = {
@@ -163,6 +173,7 @@ export type DiraProfile = {
   education?: EducationItem[];
   contributions: Contribution[];
   knowledge: KnowledgeItem[];
+  portfolio: PortfolioItem[];
   media: MediaItem[];
   publicPresence: PublicPresenceLink[];
   evidence: EvidenceSignal[];
@@ -486,6 +497,7 @@ export const demoProfile: DiraProfile = {
       sourceType: "external",
     },
   ],
+  portfolio: [],
   media: [
     {
       id: "media-interview",

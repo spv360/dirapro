@@ -1,9 +1,8 @@
 import Image from "next/image";
-import type { KnowledgeItem, MediaItem, PublicMoment } from "../../data/profile";
+import type { MediaItem, PublicMoment } from "../../data/profile";
 
 type PublicMomentsSectionProps = {
   items: PublicMoment[];
-  knowledge: KnowledgeItem[];
   media: MediaItem[];
 };
 
@@ -21,20 +20,10 @@ type WorldItem = {
 
 export default function PublicMomentsSection({
   items,
-  knowledge,
   media,
 }: PublicMomentsSectionProps) {
   const worldItems: WorldItem[] = [
     ...items,
-    ...knowledge.map((item) => ({
-      id: item.id,
-      type: item.format,
-      title: item.title,
-      organization: item.venue,
-      date: item.date,
-      summary: item.summary,
-      link: item.link,
-    })),
     ...media.map((item) => ({
       id: item.id,
       type: item.format,

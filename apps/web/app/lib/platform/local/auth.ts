@@ -65,7 +65,7 @@ export const localAuth: AuthService = {
         createdAt: now, updatedAt: now, publishedAt: null,
       };
       db.users.push(user);
-      db.profiles.push({ profile, expertise: [], experience: [], education: [], recognition: [], contributions: [], links: [] });
+      db.profiles.push({ profile, expertise: [], experience: [], education: [], recognition: [], contributions: [], knowledge: [], portfolio: [], links: [] });
       db.sessions.push({ hash: tokenHash(token), userId: user.id, expiresAt: Date.now() + ttlMs() });
       return { result: { ok: true, value: { user: publicUser(user), profileId: profile.id, token } }, save: true };
     });

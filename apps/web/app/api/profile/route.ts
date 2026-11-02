@@ -3,7 +3,7 @@ import { authorizeApi } from "../../lib/platform/session";
 import { profileCompletion, validateAbout, validateIdentity, validateList } from "../../lib/platform/validation";
 import type { ListSection, ProfileAggregate } from "../../lib/platform/types";
 
-const LIST_SECTIONS: ListSection[] = ["expertise", "experience", "education", "recognition", "contributions", "presence"];
+const LIST_SECTIONS: ListSection[] = ["expertise", "experience", "education", "recognition", "contributions", "knowledge", "portfolio", "presence"];
 
 const view = (agg: ProfileAggregate) => ({ ...agg, completion: profileCompletion(agg) });
 

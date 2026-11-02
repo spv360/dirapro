@@ -15,7 +15,12 @@ let chain: Promise<unknown> = Promise.resolve();
 
 async function read(): Promise<Db> {
   try {
-    return { ...empty(), ...(JSON.parse(await fs.readFile(file(), "utf8")) as Partial<Db>) };
+    const db = { ...empty(), ...(JSON.parse(await fs.readFile(file(), "utf8")) as Partial<Db>) };
+    for (const aggregate of db.profiles) {
+      aggregate.knowledge ??= [];
+      aggregate.portfolio ??= [];
+    }
+    return db;
   } catch (error) {
     if ((error as NodeJS.ErrnoException).code === "ENOENT") return empty();
     throw error;

@@ -9,6 +9,8 @@ import EducationSection from "./EducationSection";
 import EvidenceSection from "./EvidenceSection";
 import ExperienceSection from "./ExperienceSection";
 import ExpertiseSection from "./ExpertiseSection";
+import KnowledgeSection from "./KnowledgeSection";
+import PortfolioSection from "./PortfolioSection";
 import ProfessionalJourney from "./ProfessionalJourney";
 import ProfileClosingSection from "./ProfileClosingSection";
 import ProfileHero from "./ProfileHero";
@@ -36,7 +38,7 @@ export default function PublicProfileView({
   currentMoment,
 }: PublicProfileViewProps) {
   const hasMoments = currentMoment.moments.length > 0;
-  const hasWorld = profile.publicMoments.length + profile.knowledge.length + profile.media.length > 0;
+  const hasWorld = profile.publicMoments.length + profile.media.length > 0;
 
   return (
     <div className="profile-page">
@@ -98,9 +100,21 @@ export default function PublicProfileView({
         </Reveal>
       ) : null}
 
+      {profile.knowledge.length > 0 ? (
+        <Reveal>
+          <KnowledgeSection items={profile.knowledge} />
+        </Reveal>
+      ) : null}
+
+      {profile.portfolio.length > 0 ? (
+        <Reveal>
+          <PortfolioSection items={profile.portfolio} />
+        </Reveal>
+      ) : null}
+
       {hasWorld ? (
         <Reveal>
-          <PublicMomentsSection items={profile.publicMoments} knowledge={profile.knowledge} media={profile.media} />
+          <PublicMomentsSection items={profile.publicMoments} media={profile.media} />
         </Reveal>
       ) : null}
 

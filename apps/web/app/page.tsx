@@ -90,9 +90,14 @@ export default function Home() {
           <Link href="#about">About</Link>
         </div>
 
-        <Link href="#connect" className="nav-cta">
-          Get Started
-        </Link>
+        <div className="nav-account-links">
+          <Link href="/login" className="nav-signin">
+            Sign in
+          </Link>
+          <Link href="/register" className="nav-cta">
+            Get Started
+          </Link>
+        </div>
       </nav>
 
       <section className="hero">
