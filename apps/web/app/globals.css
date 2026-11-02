@@ -91,8 +91,23 @@ a {
   font-size: 0.9rem;
 }
 
+.nav-account-links {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.nav-signin {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
 .nav-links a,
-.nav-cta {
+.nav-cta,
+.nav-signin {
   transition:
     opacity 180ms ease,
     border-color 180ms ease,
@@ -100,11 +115,15 @@ a {
 }
 
 .nav-links a:hover,
+.nav-signin:hover,
 .nav-cta:hover {
   opacity: 0.65;
 }
 
 .nav-cta {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
   padding: 10px 17px;
 
   border: 1px solid var(--border);
@@ -2585,6 +2604,7 @@ footer {
 
 .achievement-grid,
 .contribution-grid,
+.portfolio-grid,
 .media-grid,
 .evidence-grid {
   display: grid;
@@ -2594,6 +2614,7 @@ footer {
 
 .achievement-card,
 .contribution-card,
+.portfolio-card,
 .knowledge-card,
 .media-card,
 .presence-link-card,
@@ -2619,6 +2640,7 @@ footer {
 
 .achievement-card h3,
 .contribution-card h3,
+.portfolio-card h3,
 .knowledge-card h3,
 .media-card h3 {
   margin: 18px 0 0;
@@ -2645,6 +2667,7 @@ footer {
 
 .achievement-description,
 .contribution-summary,
+.portfolio-card > p:not(.portfolio-card__category),
 .knowledge-card p,
 .media-card p {
   margin-top: 16px;
@@ -2681,9 +2704,44 @@ footer {
 }
 
 .knowledge-stack,
+.portfolio-grid,
 .presence-groups {
   display: grid;
   gap: 18px;
+}
+
+.portfolio-card__media {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border-radius: 14px;
+  background: var(--surface-muted);
+}
+
+.portfolio-card__media img {
+  object-fit: cover;
+}
+
+.portfolio-card__category {
+  margin: 18px 0 0;
+  color: var(--accent);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.portfolio-card a {
+  display: inline-block;
+  margin-top: 20px;
+  color: var(--foreground);
+  font-size: 0.78rem;
+  font-weight: 600;
+  transition: opacity 180ms ease;
+}
+
+.portfolio-card a:hover {
+  opacity: 0.68;
 }
 
 .knowledge-card {
@@ -3922,6 +3980,7 @@ footer {
   .appointment-card__body,
   .achievement-card,
   .contribution-card,
+  .portfolio-card,
   .knowledge-card,
   .media-card,
   .presence-group,

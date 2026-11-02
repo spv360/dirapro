@@ -155,7 +155,16 @@ describe("local accounts", () => {
     assert.equal(expertise.status, 200);
     assert.equal((await alice.json("PATCH", "/api/profile", { section: "experience", data: [{ title: "Consultant", organization: "City Hospital", startDate: "2019-04", current: true }] })).status, 200);
     assert.equal((await alice.json("PATCH", "/api/profile", { section: "presence", data: [{ platform: "GitHub", label: "alice", url: "https://github.com/alice" }] })).status, 200);
+    const knowledge = await alice.json("PATCH", "/api/profile", { section: "knowledge", data: [{
+      title: "Heart health research",
+      description: "A practical review of preventive cardiology.",
+      relevantTopics: ["Cardiology", "Prevention"],
+      url: "https://example.com/heart-health",
+    }] });
+    assert.equal(knowledge.status, 200);
+    const knowledgeId = knowledge.body.profile.knowledge[0].id as string;
     assert.equal((await alice.json("PATCH", "/api/profile", { section: "presence", data: [{ platform: "Website", url: "javascript:alert(1)" }] })).status, 422);
+    assert.equal((await alice.json("PATCH", "/api/profile", { section: "knowledge", data: [{ title: "", url: "javascript:alert(1)" }] })).status, 422);
     assert.equal((await alice.json("PATCH", "/api/profile", { section: "nonsense", data: [] })).status, 400);
 
     // persisted across a fresh login (new session)
@@ -163,6 +172,8 @@ describe("local accounts", () => {
     await again.json("POST", "/api/auth/login", { identifier: "user-alice", password: "correct-horse-9" });
     const reloaded = await again.json("GET", "/api/profile");
     assert.equal(reloaded.body.profile.expertise[0].name, "Cardiology");
+    assert.equal(reloaded.body.profile.knowledge[0].title, "Heart health research");
+    assert.deepEqual(reloaded.body.profile.knowledge[0].relevantTopics, ["Cardiology", "Prevention"]);
     assert.equal(reloaded.body.profile.completion.percent > 0, true);
 
     // draft: owner 200, anonymous and other users 404
@@ -180,16 +191,117 @@ describe("local accounts", () => {
     assert.match(html, /Dr Alice Test/);
     assert.match(html, /Cardiology/);
     assert.match(html, /City Hospital/);
+    assert.match(html, /Heart health research/);
+    assert.match(html, /A practical review of preventive cardiology/);
+    assert.match(html, /Prevention/);
+    assert.match(html, /https:\/\/example\.com\/heart-health/);
+    assert.match(html, /Relevant topics/);
     assert.doesNotMatch(html, /alex morgan/i);
+
+    assert.equal((await alice.json("PATCH", "/api/profile", { section: "knowledge", data: [{
+      id: knowledgeId,
+      title: "Updated heart health research",
+      description: "An updated review of preventive cardiology.",
+      relevantTopics: ["Cardiology"],
+      url: "",
+    }] })).status, 200);
+    const updatedHtml = await (await a().req("GET", "/profile/user-alice")).text();
+    assert.match(updatedHtml, /Updated heart health research/);
+    assert.match(updatedHtml, /An updated review of preventive cardiology/);
+    assert.doesNotMatch(updatedHtml, /https:\/\/example\.com\/heart-health/);
+
+    assert.equal((await alice.json("PATCH", "/api/profile", { section: "knowledge", data: [] })).status, 200);
+    assert.doesNotMatch(await (await a().req("GET", "/profile/user-alice")).text(), /Updated heart health research/);
 
     assert.equal((await alice.json("POST", "/api/profile/publish", { published: false })).status, 200);
     assert.equal((await a().req("GET", "/profile/user-alice")).status, 404);
     await alice.json("POST", "/api/profile/publish", { published: true });
   });
 
+  test("portfolio CRUD, ownership and published visibility", async () => {
+    const imageUpload = await alice.json("POST", "/api/profile/media", upload(PNG, "image/png"));
+    assert.equal(imageUpload.status, 201);
+    const image = imageUpload.body.media;
+    assert.ok(image?.file);
+
+    assert.equal((await alice.json("PATCH", "/api/profile", {
+      section: "portfolio",
+      data: [{ title: "No image or link" }],
+    })).status, 422);
+
+    assert.equal((await alice.json("POST", "/api/profile/publish", { published: false })).status, 200);
+    const created = await alice.json("PATCH", "/api/profile", {
+      section: "portfolio",
+      data: [
+        {
+          title: "Community clinic",
+          description: "A public health initiative.",
+          media: image,
+          url: "https://example.com/clinic",
+          category: "Healthcare",
+        },
+        {
+          title: "Research archive",
+          description: "A collection of published research.",
+          url: "https://example.com/research",
+        },
+      ],
+    });
+    assert.equal(created.status, 200);
+    const [clinic, archive] = created.body.profile.portfolio;
+    const mediaUrl = `/api/media/profile/${aliceProfileId}/${image.file}`;
+
+    assert.equal((await a().req("GET", "/profile/user-alice")).status, 404);
+    assert.equal((await a().req("GET", mediaUrl)).status, 404);
+    assert.equal((await alice.json("POST", "/api/profile/publish", { published: true })).status, 200);
+
+    const publicPage = await a().req("GET", "/profile/user-alice");
+    assert.equal(publicPage.status, 200);
+    const html = await publicPage.text();
+    assert.match(html, /Community clinic/);
+    assert.match(html, /A public health initiative/);
+    assert.match(html, /Healthcare/);
+    assert.match(html, /Research archive/);
+    assert.match(html, /https:\/\/example\.com\/research/);
+    assert.match(html, new RegExp(image.file.replaceAll(".", "\\.")));
+    assert.equal((await a().req("GET", mediaUrl)).status, 200);
+
+    const forged = await bob.json("PATCH", "/api/profile", {
+      section: "portfolio",
+      data: [{ id: clinic.id, title: "Forged", url: "https://example.com/forged" }],
+    });
+    assert.equal(forged.status, 200);
+    assert.notEqual(forged.body.profile.portfolio[0].id, clinic.id);
+    assert.equal((await alice.json("GET", "/api/profile")).body.profile.portfolio[0].title, "Community clinic");
+
+    const updated = await alice.json("PATCH", "/api/profile", {
+      section: "portfolio",
+      data: [
+        { ...clinic, title: "Updated community clinic", description: "An updated public health initiative." },
+        archive,
+      ],
+    });
+    assert.equal(updated.status, 200);
+    const updatedHtml = await (await a().req("GET", "/profile/user-alice")).text();
+    assert.match(updatedHtml, /Updated community clinic/);
+    assert.match(updatedHtml, /An updated public health initiative/);
+
+    const removed = await alice.json("PATCH", "/api/profile", {
+      section: "portfolio",
+      data: [updated.body.profile.portfolio[0]],
+    });
+    assert.equal(removed.status, 200);
+    assert.doesNotMatch(await (await a().req("GET", "/profile/user-alice")).text(), /Research archive/);
+
+    assert.equal((await alice.json("PATCH", "/api/profile", { section: "portfolio", data: [] })).status, 200);
+    assert.doesNotMatch(await (await a().req("GET", "/profile/user-alice")).text(), /Updated community clinic/);
+    assert.equal((await a().req("GET", mediaUrl)).status, 404);
+  });
+
   test("users cannot read or modify each other's data", async () => {
     const bobProfile = await bob.json("GET", "/api/profile");
     assert.equal(bobProfile.body.profile.expertise.length, 0);
+    assert.equal(bobProfile.body.profile.knowledge.length, 0);
     assert.notEqual(bobProfile.body.profile.profile.id, aliceProfileId);
 
     // Bob submits Alice's item id; it must not be reused or touch Alice's row.
@@ -342,6 +454,8 @@ describe("production (VERCEL=1): accounts disabled", () => {
       ["GET", "/api/auth/username?u=abc"],
       ["GET", "/api/profile"],
       ["PATCH", "/api/profile", { section: "about", data: {} }],
+      ["PATCH", "/api/profile", { section: "knowledge", data: [{ title: "Disabled write" }] }],
+      ["PATCH", "/api/profile", { section: "portfolio", data: [{ title: "Disabled write", url: "https://example.com" }] }],
       ["POST", "/api/profile/publish", { published: true }],
       ["POST", "/api/profile/media", upload(PNG, "image/png")],
     ];
@@ -349,6 +463,7 @@ describe("production (VERCEL=1): accounts disabled", () => {
       const response = await c.json(method, url, body);
       assert.equal(response.status, 503, `${method} ${url}`);
       assert.equal(response.body.code, "ACCOUNTS_DISABLED", `${method} ${url}`);
+      assert.equal(response.headers.has("set-cookie"), false, `${method} ${url}`);
     }
   });
 

@@ -16,7 +16,7 @@ type Row = Record<string, unknown> & { _key: string };
 type Field = {
   key: string;
   label: string;
-  type?: "text" | "textarea" | "select" | "month" | "year" | "url" | "checkbox" | "image";
+  type?: "text" | "textarea" | "tags" | "select" | "month" | "year" | "url" | "checkbox" | "image";
   options?: readonly string[];
   hint?: string;
   half?: boolean;
@@ -96,6 +96,29 @@ export const LIST_CONFIG: Record<ListSection, ListConfig> = {
     blank: () => ({ title: "", type: "project", description: "", url: "", media: null }),
     title: (r) => String(r.title || "New contribution"),
   },
+  knowledge: {
+    noun: "knowledge entry",
+    fields: [
+      { key: "title", label: "Title" },
+      { key: "description", label: "Description", type: "textarea" },
+      { key: "relevantTopics", label: "Relevant topics", type: "tags", hint: "Separate topics with commas." },
+      { key: "url", label: "Supporting URL", type: "url", hint: "Optional." },
+    ],
+    blank: () => ({ title: "", description: "", relevantTopics: [], url: "" }),
+    title: (r) => String(r.title || "New knowledge entry"),
+  },
+  portfolio: {
+    noun: "portfolio item",
+    fields: [
+      { key: "title", label: "Title" },
+      { key: "description", label: "Description", type: "textarea" },
+      { key: "media", label: "Image", type: "image", hint: "Optional. JPEG, PNG or WebP, up to 8 MB." },
+      { key: "url", label: "External URL", type: "url", hint: "Add an image or a supporting URL." },
+      { key: "category", label: "Category", hint: "Optional." },
+    ],
+    blank: () => ({ title: "", description: "", media: null, url: "", category: "" }),
+    title: (r) => String(r.title || "New portfolio item"),
+  },
   presence: {
     noun: "link",
     fields: [
@@ -108,9 +131,10 @@ export const LIST_CONFIG: Record<ListSection, ListConfig> = {
   },
 };
 
-const SOURCE: Record<ListSection, "expertise" | "experience" | "education" | "recognition" | "contributions" | "links"> = {
+const SOURCE: Record<ListSection, "expertise" | "experience" | "education" | "recognition" | "contributions" | "knowledge" | "portfolio" | "links"> = {
   expertise: "expertise", experience: "experience", education: "education",
-  recognition: "recognition", contributions: "contributions", presence: "links",
+  recognition: "recognition", contributions: "contributions", knowledge: "knowledge",
+  portfolio: "portfolio", presence: "links",
 };
 
 let counter = 0;
@@ -276,8 +300,9 @@ function ListEditor(props: EditorProps & { section: ListSection }) {
                   <div key={field.key} className={field.half ? "" : "acct-grid__full"}>
                     <TextField
                       id={id} label={field.label} error={error} hint={field.hint}
-                      value={String(value ?? "")} onChange={(v) => patch(index, field.key, v)}
-                      textarea={field.type === "textarea"} rows={4}
+                      value={Array.isArray(value) ? value.join(", ") : String(value ?? "")}
+                      onChange={(v) => patch(index, field.key, field.type === "tags" ? v.split(",").map((topic) => topic.trim()).filter(Boolean) : v)}
+                      textarea={field.type === "textarea" || field.type === "tags"} rows={4}
                       select={field.type === "select" ? field.options : undefined}
                       inputType={field.type === "month" ? "month" : field.type === "url" ? "url" : field.type === "year" ? "number" : "text"}
                     />

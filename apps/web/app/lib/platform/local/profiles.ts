@@ -15,7 +15,8 @@ const mediaExists = (profileId: string, ref: MediaRef) => mediaFileExists(profil
 
 const SECTION_KEY = {
   expertise: "expertise", experience: "experience", education: "education",
-  recognition: "recognition", contributions: "contributions", presence: "links",
+  recognition: "recognition", contributions: "contributions", knowledge: "knowledge",
+  portfolio: "portfolio", presence: "links",
 } as const;
 
 export const localProfiles: ProfileRepository = {
@@ -81,7 +82,7 @@ export const localProfiles: ProfileRepository = {
       const agg = find(db, ownerId);
       if (!agg) return { result: bad("NOT_FOUND", "Profile not found."), save: false };
       const key = SECTION_KEY[section];
-      const existing = new Set((agg[key] as { id: string }[]).map((e) => e.id));
+      const existing = new Set(((agg[key] ?? []) as { id: string }[]).map((e) => e.id));
       const next = (items as unknown as Record<string, unknown>[]).map((item, sortOrder) => {
         const media = item.media as MediaRef | null | undefined;
         if (media && !mediaExists(agg.profile.id, media)) throw new Error("INVALID_MEDIA");

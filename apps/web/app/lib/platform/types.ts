@@ -103,6 +103,21 @@ export type Contribution = Owned & {
   media: MediaRef | null;
 };
 
+export type Knowledge = Owned & {
+  title: string;
+  description: string;
+  relevantTopics: string[];
+  url: string;
+};
+
+export type PortfolioEntry = Owned & {
+  title: string;
+  description: string;
+  media: MediaRef | null;
+  url: string;
+  category: string;
+};
+
 export type PublicLink = Owned & { platform: LinkPlatform; label: string; url: string };
 
 export type ProfileAggregate = {
@@ -112,10 +127,12 @@ export type ProfileAggregate = {
   education: Education[];
   recognition: Recognition[];
   contributions: Contribution[];
+  knowledge: Knowledge[];
+  portfolio: PortfolioEntry[];
   links: PublicLink[];
 };
 
-export type ListSection = "expertise" | "experience" | "education" | "recognition" | "contributions" | "presence";
+export type ListSection = "expertise" | "experience" | "education" | "recognition" | "contributions" | "knowledge" | "portfolio" | "presence";
 export type ProfileSection = "identity" | "about" | "progress" | ListSection;
 
 /** Writable shape of a list entry: server assigns profileId and sortOrder. */
@@ -143,5 +160,7 @@ export type SectionItems = {
   education: Input<Education>[];
   recognition: Input<Recognition>[];
   contributions: Input<Contribution>[];
+  knowledge: Input<Knowledge>[];
+  portfolio: Input<PortfolioEntry>[];
   presence: Input<PublicLink>[];
 };

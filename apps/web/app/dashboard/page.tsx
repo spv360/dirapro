@@ -22,7 +22,8 @@ export default async function DashboardPage() {
   const recent = (await listAll(p.id)).slice(0, 3);
   const counts: Record<string, number> = {
     expertise: agg.expertise.length, experience: agg.experience.length, education: agg.education.length,
-    recognition: agg.recognition.length, contributions: agg.contributions.length, presence: agg.links.length,
+    recognition: agg.recognition.length, contributions: agg.contributions.length,
+    knowledge: (agg.knowledge ?? []).length, portfolio: (agg.portfolio ?? []).length, presence: agg.links.length,
   };
 
   return (

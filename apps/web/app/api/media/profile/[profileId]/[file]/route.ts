@@ -8,7 +8,8 @@ type Context = { params: Promise<{ profileId: string; file: string }> };
 const references = (agg: ProfileAggregate, file: string) =>
   agg.profile.profileImage?.file === file ||
   agg.profile.coverImage?.file === file ||
-  agg.contributions.some((c) => c.media?.file === file);
+  agg.contributions.some((c) => c.media?.file === file) ||
+  (agg.portfolio ?? []).some((item) => item.media?.file === file);
 
 export async function GET(_request: Request, { params }: Context) {
   const { profileId, file } = await params;

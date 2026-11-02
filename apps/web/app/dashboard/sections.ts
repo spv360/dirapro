@@ -6,5 +6,7 @@ export const SECTION_LINKS = [
   { id: "education", title: "Education", blurb: "Qualifications" },
   { id: "recognition", title: "Recognition", blurb: "Certifications and awards" },
   { id: "contributions", title: "Contributions", blurb: "Projects and publications" },
+  { id: "knowledge", title: "Knowledge", blurb: "Articles, talks, research, and ideas" },
+  { id: "portfolio", title: "Media & Portfolio", blurb: "Selected work and supporting media" },
   { id: "presence", title: "Public presence", blurb: "Official links" },
 ] as const;

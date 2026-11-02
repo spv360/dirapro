@@ -237,6 +237,43 @@ export function validateList<S extends ListSection>(section: S, raw: unknown): V
           media: media(e.media, errors, at("media")),
         };
       }
+      case "knowledge": {
+        const title = str(e.title, 160);
+        const description = str(e.description, 2000);
+        const rawTopics = Array.isArray(e.relevantTopics) ? e.relevantTopics : [];
+        const relevantTopics = Array.from(new Set(rawTopics.map((topic) => str(topic, 40)).filter(Boolean)));
+        if (!title) errors[at("title")] = "Enter a title.";
+        if (e.relevantTopics !== undefined && !Array.isArray(e.relevantTopics)) {
+          errors[at("relevantTopics")] = "Expected a list of topics.";
+        }
+        if (relevantTopics.length > 12) errors[at("relevantTopics")] = "Use at most 12 topics.";
+        if (rawTopics.some((topic) => typeof topic !== "string" || topic.trim().length > 40)) {
+          errors[at("relevantTopics")] = "Keep each topic under 40 characters.";
+        }
+        return {
+          id,
+          title,
+          description,
+          relevantTopics,
+          url: optionalUrl(e.url, errors, at("url")),
+        };
+      }
+      case "portfolio": {
+        const title = str(e.title, 160);
+        const description = str(e.description, 2000);
+        const itemMedia = media(e.media, errors, at("media"));
+        const url = optionalUrl(e.url, errors, at("url"));
+        if (!title) errors[at("title")] = "Enter a title.";
+        if (!itemMedia && !url) errors[at("url")] = "Add an image or supporting URL.";
+        return {
+          id,
+          title,
+          description,
+          media: itemMedia,
+          url,
+          category: str(e.category, 80),
+        };
+      }
       case "presence": {
         const url = str(e.url, 500);
         if (!url || !validUrl(url)) errors[at("url")] = "Enter a valid http(s) URL.";
