@@ -92,3 +92,68 @@ describe("local development (no VERCEL)", () => {
     assert.equal(response.status, 200);
   });
 });
+
+const supabaseEnv = {
+  DIRA_BACKEND: "supabase",
+  NEXT_PUBLIC_SUPABASE_URL: "https://dira-test.supabase.co",
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: "test-anon-key",
+};
+
+describe("Vercel Preview with Supabase", () => {
+  let server: { child: ChildProcess; base: string };
+  before(async () => { server = await start(3073, { VERCEL: "1", VERCEL_ENV: "preview", ...owner, ...supabaseEnv }); });
+  after(() => stop(server.child));
+  const json = { "Content-Type": "application/json" };
+
+  test("profile publish reaches authentication instead of the publishing guard", async () => {
+    const response = await send(server.base, "POST", "/api/profile/publish", JSON.stringify({ published: true }), json);
+    assert.equal(response.status, 401);
+  });
+
+  test("cross-origin publish is rejected", async () => {
+    const response = await send(server.base, "POST", "/api/profile/publish", JSON.stringify({ published: true }), { ...json, Origin: "https://evil.example" });
+    assert.equal(response.status, 403);
+  });
+
+  for (const [method, url] of [["POST", "/api/journey"], ["POST", "/api/journey/media"], ["POST", "/api/profile/media"], ["POST", "/api/owner/session"]]) {
+    test(`${method} ${url} stays 503 PUBLISHING_DISABLED`, async () => {
+      const response = await send(server.base, method, url, "{}", json);
+      assert.equal(response.status, 503);
+      assert.equal(((await response.json()) as { code: string }).code, "PUBLISHING_DISABLED");
+    });
+  }
+});
+
+describe("Vercel Production with Supabase configured", () => {
+  let server: { child: ChildProcess; base: string };
+  before(async () => { server = await start(3074, { VERCEL: "1", VERCEL_ENV: "production", ...owner, ...supabaseEnv }); });
+  after(() => stop(server.child));
+
+  test("profile publish stays 503 ACCOUNTS_DISABLED", async () => {
+    const response = await send(server.base, "POST", "/api/profile/publish", JSON.stringify({ published: true }), { "Content-Type": "application/json" });
+    assert.equal(response.status, 503);
+    assert.equal(((await response.json()) as { code: string }).code, "ACCOUNTS_DISABLED");
+  });
+});
+
+describe("Vercel Production with DIRA_ENABLE_ACCOUNT_WRITES=true", () => {
+  let server: { child: ChildProcess; base: string };
+  before(async () => {
+    server = await start(3075, { VERCEL: "1", VERCEL_ENV: "production", DIRA_ENABLE_ACCOUNT_WRITES: "true", ...owner, ...supabaseEnv });
+  });
+  after(() => stop(server.child));
+  const json = { "Content-Type": "application/json" };
+
+  test("profile publish reaches authentication", async () => {
+    const response = await send(server.base, "POST", "/api/profile/publish", JSON.stringify({ published: true }), json);
+    assert.equal(response.status, 401);
+  });
+
+  for (const [method, url] of [["POST", "/api/journey"], ["POST", "/api/journey/media"], ["POST", "/api/profile/media"], ["POST", "/api/owner/session"]]) {
+    test(`${method} ${url} stays 503 PUBLISHING_DISABLED`, async () => {
+      const response = await send(server.base, method, url, "{}", json);
+      assert.equal(response.status, 503);
+      assert.equal(((await response.json()) as { code: string }).code, "PUBLISHING_DISABLED");
+    });
+  }
+});
