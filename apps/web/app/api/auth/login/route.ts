@@ -15,9 +15,21 @@ export async function POST(request: Request) {
 
   const result = await auth.login(identifier, password);
   if (!result.ok) {
-    return Response.json({ code: result.code, error: result.message }, { status: result.code === "RATE_LIMITED" ? 429 : 401 });
+    const status =
+      result.code === "RATE_LIMITED" ? 429 :
+      result.code === "EMAIL_REQUIRED" ? 422 :
+      result.code === "EMAIL_NOT_VERIFIED" ? 403 : 401;
+    return Response.json(
+      { code: result.code, error: result.message },
+      { status, headers: { "Cache-Control": "private, no-store" } },
+    );
   }
 
-  (await cookies()).set(ACCOUNT_COOKIE, result.value.token, accountCookieOptions());
-  return Response.json({ user: result.value.user });
+  if (result.value.token) {
+    (await cookies()).set(ACCOUNT_COOKIE, result.value.token, accountCookieOptions());
+  }
+  return Response.json(
+    { user: result.value.user },
+    { headers: { "Cache-Control": "private, no-store" } },
+  );
 }

@@ -8,15 +8,24 @@ import type {
   SectionItems,
 } from "./types.ts";
 
-/** Adapter interfaces. Local JSON/filesystem today; Supabase Auth/Postgres/Storage later. */
+/** Adapter interfaces shared by local and Supabase-backed platform implementations. */
 
 export type AuthResult<T> = { ok: true; value: T } | { ok: false; code: string; message: string };
 
 export interface AuthService {
-  register(input: { fullName: string; email: string; username: string; password: string }): Promise<AuthResult<{ user: PublicUser; profileId: string; token: string }>>;
-  login(identifier: string, password: string): Promise<AuthResult<{ user: PublicUser; token: string }>>;
-  userForToken(token: string): Promise<PublicUser | null>;
-  logout(token: string): Promise<void>;
+  register(
+    input: { fullName: string; email: string; username: string; password: string },
+    options?: { emailRedirectTo?: string },
+  ): Promise<AuthResult<{
+    user: PublicUser;
+    profileId?: string;
+    token?: string;
+    emailVerificationRequired?: boolean;
+    message?: string;
+  }>>;
+  login(identifier: string, password: string): Promise<AuthResult<{ user: PublicUser; token?: string }>>;
+  userForToken(token?: string): Promise<PublicUser | null>;
+  logout(token?: string): Promise<void>;
   usernameAvailable(username: string): Promise<boolean>;
 }
 

@@ -9,5 +9,5 @@ export async function POST(request: Request) {
   const store = await cookies();
   await auth.logout(store.get(ACCOUNT_COOKIE)?.value ?? "");
   store.delete(ACCOUNT_COOKIE);
-  return Response.json({ ok: true });
+  return Response.json({ ok: true }, { headers: { "Cache-Control": "private, no-store" } });
 }

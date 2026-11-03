@@ -2,12 +2,18 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { LoginForm } from "../components/account/AuthForms";
 import { ACCOUNTS_DISABLED_MESSAGE, accountsDisabled, currentUser } from "../lib/platform/session";
+import { platformBackend } from "../lib/platform";
 
 export const metadata = { title: "Sign in · DiraPro", robots: { index: false } };
 
-export default async function LoginPage() {
+export default async function LoginPage({ searchParams }: { searchParams: Promise<{ verification?: string }> }) {
   if (await currentUser()) redirect("/dashboard");
   const disabled = accountsDisabled();
+  const { verification } = await searchParams;
+  const notice =
+    verification === "verified" ? "Email verified. You can now sign in." :
+    verification === "failed" ? "This verification link is invalid or has expired. Sign in if you have already verified your email, or request a new link." :
+    verification === "unavailable" ? ACCOUNTS_DISABLED_MESSAGE : undefined;
 
   return (
     <main className="profile-page acct-page">
@@ -21,7 +27,7 @@ export default async function LoginPage() {
         {disabled ? (
           <div className="journey-notice" role="status"><p>{ACCOUNTS_DISABLED_MESSAGE}</p></div>
         ) : (
-          <LoginForm />
+          <LoginForm emailOnly={platformBackend === "supabase"} notice={notice} />
         )}
       </section>
     </main>

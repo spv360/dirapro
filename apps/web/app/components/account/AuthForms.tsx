@@ -44,6 +44,7 @@ export function RegisterForm() {
   const [terms, setTerms] = useState(false);
   const [errors, setErrors] = useState<Errors>({});
   const [formError, setFormError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const [busy, setBusy] = useState(false);
   const [availability, setAvailability] = useState<{ available: boolean; reason: string | null } | null>(null);
 
@@ -69,8 +70,19 @@ export function RegisterForm() {
     setBusy(true);
     setErrors({});
     setFormError("");
-    const result = await postJson<unknown>("/api/auth/register", "POST", { fullName, email, username, password, terms });
+    setSuccessMessage("");
+    const result = await postJson<{ emailVerificationRequired?: boolean; message?: string }>(
+      "/api/auth/register",
+      "POST",
+      { fullName, email, username, password, terms },
+    );
     if (result.ok) {
+      if (result.data.emailVerificationRequired) {
+        setBusy(false);
+        setPassword("");
+        setSuccessMessage(result.data.message ?? "Check your email for a verification link before signing in.");
+        return;
+      }
       router.push("/onboarding");
       router.refresh();
       return;
@@ -128,6 +140,7 @@ export function RegisterForm() {
         <span>I agree to the Terms and Privacy Policy.</span>
       </label>
       {errors.terms ? <p className="journey-error">{errors.terms}</p> : null}
+      {successMessage ? <div className="journey-notice" role="status"><p>{successMessage}</p></div> : null}
       {formError ? <p className="journey-error" role="alert">{formError}</p> : null}
 
       <button type="submit" className="button button-primary" disabled={busy}>
@@ -138,7 +151,7 @@ export function RegisterForm() {
   );
 }
 
-export function LoginForm() {
+export function LoginForm({ emailOnly = false, notice }: { emailOnly?: boolean; notice?: string }) {
   const router = useRouter();
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
@@ -161,9 +174,10 @@ export function LoginForm() {
 
   return (
     <form className="acct-form" onSubmit={submit}>
+      {notice ? <div className="journey-notice" role="status"><p>{notice}</p></div> : null}
       <div className="journey-field">
-        <label htmlFor="identifier">Email or username</label>
-        <input id="identifier" name="identifier" value={identifier} autoComplete="username" required onChange={(e) => setIdentifier(e.target.value)} />
+        <label htmlFor="identifier">{emailOnly ? "Email" : "Email or username"}</label>
+        <input id="identifier" name="identifier" type={emailOnly ? "email" : "text"} value={identifier} autoComplete={emailOnly ? "email" : "username"} required onChange={(e) => setIdentifier(e.target.value)} />
       </div>
       <div className="journey-field">
         <label htmlFor="password">Password</label>

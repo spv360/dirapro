@@ -27,7 +27,7 @@ export function accountCookieOptions() {
 export async function currentUser(): Promise<PublicUser | null> {
   if (accountsDisabled()) return null;
   const token = (await cookies()).get(ACCOUNT_COOKIE)?.value;
-  return token ? auth.userForToken(token) : null;
+  return auth.userForToken(token);
 }
 
 export async function currentProfile(): Promise<{ user: PublicUser; aggregate: ProfileAggregate } | null> {

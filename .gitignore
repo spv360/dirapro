@@ -38,3 +38,5 @@ Thumbs.db
 # Caches
 .cache/
 .turbo/
+.vercel
+.env*.local
