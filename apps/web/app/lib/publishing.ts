@@ -19,3 +19,30 @@ export function publishingDisabledResponse(): Response {
     { status: 503 },
   );
 }
+
+/**
+ * Account and profile writes use Supabase (never the filesystem) on Vercel Preview.
+ * Everything else on Vercel, including Production, stays disabled. Fails closed when
+ * the backend or its public configuration is missing.
+ */
+export function accountWritesDisabled(env: Env = process.env): boolean {
+  if (env.DIRA_PUBLISHING_DISABLED === "true") return true;
+  if (!env.VERCEL) return false;
+  const key = env.NEXT_PUBLIC_SUPABASE_ANON_KEY || env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+  return !(
+    env.VERCEL_ENV === "preview" &&
+    env.DIRA_BACKEND === "supabase" &&
+    isValidSupabaseUrl(env.NEXT_PUBLIC_SUPABASE_URL) &&
+    Boolean(key?.trim())
+  );
+}
+
+function isValidSupabaseUrl(value: string | undefined): boolean {
+  if (!value) return false;
+  try {
+    const url = new URL(value);
+    return url.protocol === "https:" && url.hostname !== "" && url.username === "" && url.password === "";
+  } catch {
+    return false;
+  }
+}
