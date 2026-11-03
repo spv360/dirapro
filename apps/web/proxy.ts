@@ -1,10 +1,10 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
-import { publishingDisabled } from "./app/lib/publishing";
+import { accountWritesDisabled } from "./app/lib/publishing";
 import { supabaseCookieOptions, supabasePublicConfig } from "./app/lib/platform/supabase/config";
 
 export async function proxy(request: NextRequest) {
-  if (process.env.DIRA_BACKEND !== "supabase" || publishingDisabled()) {
+  if (process.env.DIRA_BACKEND !== "supabase" || accountWritesDisabled()) {
     return NextResponse.next({ request });
   }
 

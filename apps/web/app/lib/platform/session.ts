@@ -1,5 +1,5 @@
 import { cookies } from "next/headers";
-import { publishingDisabled } from "../publishing";
+import { accountWritesDisabled } from "../publishing";
 import { auth, profiles } from "./index";
 import type { ProfileAggregate, PublicUser } from "./types";
 
@@ -8,7 +8,7 @@ export const ACCOUNTS_DISABLED_CODE = "ACCOUNTS_DISABLED";
 export const ACCOUNTS_DISABLED_MESSAGE =
   "Accounts are not available yet. Dira is preparing production storage, so registration and sign-in are temporarily disabled.";
 
-export const accountsDisabled = () => publishingDisabled();
+export const accountsDisabled = () => accountWritesDisabled();
 
 export function accountsDisabledResponse(): Response {
   return Response.json({ code: ACCOUNTS_DISABLED_CODE, error: ACCOUNTS_DISABLED_MESSAGE }, { status: 503 });

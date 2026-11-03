@@ -1,9 +1,12 @@
 import { mediaStorage, profiles } from "../../../lib/platform";
 import { matchesSignature } from "../../../lib/media-signature";
+import { publishingDisabled, publishingDisabledResponse } from "../../../lib/publishing";
 import { authorizeApi } from "../../../lib/platform/session";
 import { validateImageFile } from "../../../lib/platform/validation";
 
 export async function POST(request: Request) {
+  // Uploads are filesystem-backed, so they stay blocked on every Vercel environment.
+  if (publishingDisabled()) return publishingDisabledResponse();
   const gate = await authorizeApi(request);
   if (gate instanceof Response) return gate;
 

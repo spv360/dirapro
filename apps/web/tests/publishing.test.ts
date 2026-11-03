@@ -93,3 +93,33 @@ test("account writes: Preview requires a strictly valid Supabase URL and key", (
   assert.equal(accountWritesDisabled({ ...good, VERCEL_ENV: "Preview" }), true);
   assert.equal(accountWritesDisabled({ ...good, DIRA_BACKEND: "Supabase" }), true);
 });
+
+test("account writes: Production requires the explicit flag plus valid Supabase config", () => {
+  const prod = { VERCEL: "1", VERCEL_ENV: "production", ...supabase };
+  assert.equal(accountWritesDisabled(prod), true);
+  assert.equal(accountWritesDisabled({ ...prod, DIRA_ENABLE_ACCOUNT_WRITES: "false" }), true);
+  assert.equal(accountWritesDisabled({ ...prod, DIRA_ENABLE_ACCOUNT_WRITES: "TRUE" }), true);
+  assert.equal(accountWritesDisabled({ ...prod, DIRA_ENABLE_ACCOUNT_WRITES: "1" }), true);
+
+  const enabled = { ...prod, DIRA_ENABLE_ACCOUNT_WRITES: "true" };
+  assert.equal(accountWritesDisabled(enabled), false);
+  assert.equal(accountWritesDisabled({ ...enabled, DIRA_BACKEND: "local" }), true);
+  assert.equal(accountWritesDisabled({ ...enabled, DIRA_BACKEND: undefined }), true);
+  assert.equal(accountWritesDisabled({ ...enabled, NEXT_PUBLIC_SUPABASE_URL: "http://example.supabase.co" }), true);
+  assert.equal(accountWritesDisabled({ ...enabled, NEXT_PUBLIC_SUPABASE_URL: undefined }), true);
+  assert.equal(accountWritesDisabled({ ...enabled, NEXT_PUBLIC_SUPABASE_ANON_KEY: "" }), true);
+  assert.equal(accountWritesDisabled({ ...enabled, DIRA_PUBLISHING_DISABLED: "true" }), true);
+});
+
+test("account writes: the production flag never enables Journey/media or other environments", () => {
+  const enabled = { VERCEL: "1", VERCEL_ENV: "production", DIRA_ENABLE_ACCOUNT_WRITES: "true", ...supabase };
+  assert.equal(publishingDisabled(enabled), true);
+  assert.equal(accountWritesDisabled({ ...enabled, VERCEL_ENV: "development" }), true);
+  assert.equal(accountWritesDisabled({ ...enabled, VERCEL_ENV: undefined }), true);
+});
+
+test("account writes: Preview is unaffected by the production flag", () => {
+  const preview = { VERCEL: "1", VERCEL_ENV: "preview", ...supabase };
+  assert.equal(accountWritesDisabled(preview), false);
+  assert.equal(accountWritesDisabled({ ...preview, DIRA_ENABLE_ACCOUNT_WRITES: "false" }), false);
+});
